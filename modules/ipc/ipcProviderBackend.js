@@ -244,7 +244,7 @@ class IpcProviderBackend {
     ) {
       // stop syncing when node about to be stopped
       case ethereumNode.STATES.STOPPING:
-        log.info('Ethereum node stopping, disconnecting sockets');
+        log.info(Settings.public.name + ' node stopping, disconnecting sockets');
 
         // Unsubscribe remote subscriptions
         _.each(this._remoteSubscriptions, remoteSubscriptionId => {

@@ -161,17 +161,19 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
           // geth
         } else {
           if (process.platform === 'darwin')
-            keystorePath += '/Library/Ethereum/keystore';
+            keystorePath += Settings.public.keystorePath.darwin;
 
           if (
             process.platform === 'freebsd' ||
             process.platform === 'linux' ||
             process.platform === 'sunos'
           )
-            keystorePath += '/.ethereum/keystore';
+            keystorePath += Settings.public.keystorePath.unix;
 
           if (process.platform === 'win32')
-            keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+            keystorePath = `${Settings.appDataPath}${
+              Settings.public.keystorePath.win32
+            }`;
         }
 
         if (!/^[0-9a-fA-F]{40}$/.test(keyfile.address)) {
@@ -203,7 +205,7 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
   const ClientBinaryManager = require('./clientBinaryManager'); // eslint-disable-line global-require
   let error = false;
 
-  const binPath = ClientBinaryManager.getClient('geth').binPath;
+  const binPath = ClientBinaryManager.getClient(Settings.public.defaultNodeType).binPath;
   const nodeProcess = spawn(binPath, ['wallet', 'import', path]);
 
   nodeProcess.once('error', () => {

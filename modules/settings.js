@@ -58,6 +58,17 @@ class Settings {
       );
     }
 
+    // read public settings
+    var config = {};
+    try {
+      _.extend(config, require('../config.json').public);
+    } catch (error) {
+      settingsLog.error(error);
+    }
+
+    settingsLog.info('init() public settings...');
+    this.public = config;
+
     store.dispatch(syncBuildConfig('appVersion', packageJson.version));
     store.dispatch(syncBuildConfig('rpcMode', this.rpcMode));
     store.dispatch(syncBuildConfig('productionMode', this.inProductionMode));
@@ -93,7 +104,8 @@ class Settings {
   }
 
   get appName() {
-    return this.uiMode === 'mist' ? 'Mist' : 'Ethereum Wallet';
+    let walletName = this.public.walletName || 'Ethereum Wallet';
+    return this.uiMode === 'mist' ? 'Mist' : walletName;
   }
 
   get appLicense() {
@@ -161,15 +173,15 @@ class Settings {
     ipcPath = this.userHomePath;
 
     if (process.platform === 'darwin') {
-      ipcPath += '/Library/Ethereum/geth.ipc';
+      ipcPath += this.public.ipcPath.darwin;
     } else if (
       process.platform === 'freebsd' ||
       process.platform === 'linux' ||
       process.platform === 'sunos'
     ) {
-      ipcPath += '/.ethereum/geth.ipc';
+      ipcPath += this.public.ipcPath.unix;
     } else if (process.platform === 'win32') {
-      ipcPath = '\\\\.\\pipe\\geth.ipc';
+      ipcPath = this.public.ipcPath.win32;
     }
 
     settingsLog.debug(`IPC path: ${ipcPath}`);

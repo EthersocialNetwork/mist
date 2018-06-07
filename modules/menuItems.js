@@ -291,7 +291,7 @@ let menuTempl = function(webviews) {
                 // geth
               } else {
                 if (process.platform === 'darwin') {
-                  userPath += '/Library/Ethereum/keystore';
+                  userPath += Settings.public.userPath.darwin;
                 }
 
                 if (
@@ -299,11 +299,11 @@ let menuTempl = function(webviews) {
                   process.platform === 'linux' ||
                   process.platform === 'sunos'
                 ) {
-                  userPath += '/.ethereum/keystore';
+                  userPath += Settings.public.userPath.unix;
                 }
 
                 if (process.platform === 'win32') {
-                  userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                  userPath = `${Settings.appDataPath}${Settings.public.userPath.win32}`;
                 }
               }
 
@@ -525,16 +525,18 @@ let menuTempl = function(webviews) {
     const nodeSubmenu = [];
 
     const ethClient = ClientBinaryManager.getClient('eth');
-    const gethClient = ClientBinaryManager.getClient('geth');
+    const gethClient = ClientBinaryManager.getClient(Settings.public.defaultNodeType);
+    log.info('itemMenu gethClient for ' + Settings.public.defaultNodeType);
+    log.info(gethClient);
 
     if (gethClient) {
       nodeSubmenu.push({
-        label: `Geth ${gethClient.version}`,
+        label: `${Settings.public.defaultNodeTypeId} ${gethClient.version}`,
         checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
         enabled: ethereumNode.isOwnNode,
         type: 'checkbox',
         click() {
-          restartNode('geth', null, 'fast', webviews);
+          restartNode(Settings.public.defaultNodeType, null, 'fast', webviews);
         }
       });
     }
@@ -558,10 +560,10 @@ let menuTempl = function(webviews) {
     });
   }
 
-  // add network switch
-  devToolsMenu.push({
-    label: i18n.t('mist.applicationMenu.develop.network'),
-    submenu: [
+  var networkSubmenu = [];
+  // ethereum networks
+  var submenus = {
+    ethereum: [
       {
         label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
         accelerator: 'CommandOrControl+Alt+1',
@@ -602,7 +604,47 @@ let menuTempl = function(webviews) {
       //     restartNode(ethereumNode.type, 'dev');
       //   }
       // }
+    ],
+    ethersocial: [
+      {
+        label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+        accelerator: 'CommandOrControl+Alt+1',
+        checked: store.getState().nodes.network === 'ethersocial',
+        enabled: store.getState().nodes.network !== 'private',
+        type: 'checkbox',
+        click() {
+          changeNodeNetwork('ethersocial', webviews);
+        }
+      },
+      {
+        label: 'Skynet - Test network',
+        accelerator: 'CommandOrControl+Alt+2',
+        checked: store.getState().nodes.network === 'skynet',
+        enabled: store.getState().nodes.network !== 'private',
+        type: 'checkbox',
+        click() {
+          changeNodeNetwork('skynet', webviews);
+        }
+      }
     ]
+  };
+
+  // add ethereum network menu
+  networkSubmenu.push({
+    label: 'Ethereum',
+    submenu: submenus['ethereum']
+  });
+
+  // add ethersocial network menu
+  networkSubmenu.push({
+    label: 'EthersocialNetwork',
+    submenu: submenus['ethersocial']
+  });
+
+  // add network switch
+  devToolsMenu.push({
+    label: i18n.t('mist.applicationMenu.develop.network'),
+    submenu: networkSubmenu
   });
 
   // add sync mode switch
@@ -755,19 +797,19 @@ let menuTempl = function(webviews) {
     {
       label: i18n.t('mist.applicationMenu.help.mistWiki'),
       click() {
-        shell.openExternal('https://github.com/ethereum/mist/wiki');
+        shell.openExternal(Settings.public.wikiUrl);
       }
     },
     {
       label: i18n.t('mist.applicationMenu.help.gitter'),
       click() {
-        shell.openExternal('https://gitter.im/ethereum/mist');
+        shell.openExternal(Settings.public.gitterUrl);
       }
     },
     {
       label: i18n.t('mist.applicationMenu.help.reportBug'),
       click() {
-        shell.openExternal('https://github.com/ethereum/mist/issues');
+        shell.openExternal(Settings.public.issueUrl);
       }
     }
   );
