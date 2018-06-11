@@ -11,8 +11,17 @@ const Q = require('bluebird');
 const shell = require('shelljs');
 const version = require('../package.json').version;
 
+var settings = {};
+try {
+  _.extend(settings, require('../local.json'));
+} catch (error) {
+  _.extend(settings, require('../default.json'));
+}
+
 const type = options.type;
-const applicationName = options.wallet ? 'Ethereum Wallet' : 'Mist';
+const applicationName = options.wallet ? settings.walletName : 'Mist';
+
+settings.appId = `${settings.appPrefix}.${type}`;
 
 gulp.task('clean-dist', cb => {
   return del([`./dist_${type}`], cb);
@@ -56,18 +65,24 @@ gulp.task('transpile-modules', () => {
 });
 
 gulp.task('copy-build-folder-files', () => {
+  let imgSrcDir = './';
+  if (settings.imgSrcDir) {
+    imgSrcDir = settings.imgSrcDir;
+  }
   return gulp
-    .src([`./icons/${type}/*`, './interface/public/images/dmg-background.jpg'])
+    .src([`${imgSrcDir}icons/${type}/*`, `${imgSrcDir}interface/public/images/dmg-background.jpg`])
     .pipe(gulp.dest(`./dist_${type}/build`));
 });
 
 gulp.task('switch-production', cb => {
+  var config = {
+    production: true,
+    mode: type
+  };
+  config.public = settings;
   fs.writeFile(
     `./dist_${type}/app/config.json`,
-    JSON.stringify({
-      production: true,
-      mode: type
-    }),
+    JSON.stringify(config),
     cb
   );
 });
@@ -133,9 +148,9 @@ gulp.task('build-dist', cb => {
     productName: applicationName,
     description: applicationName,
     license: 'GPL-3.0',
-    homepage: 'https://github.com/ethereum/mist',
+    homepage: settings.homepage,
     build: {
-      appId: `org.ethereum.${type}`,
+      appId: settings.appId,
       asar: true,
       directories: {
         buildResources: '../build',
