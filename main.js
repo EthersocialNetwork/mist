@@ -156,7 +156,7 @@ store.dispatch({
   payload: { protocol: 'bzz' }
 });
 
-function onReady() {
+async function onReady() {
   global.config = db.getCollection('SYS_config');
 
   dbSync.initializeListeners();
@@ -171,10 +171,6 @@ function onReady() {
 
   ipcProviderBackend.init();
 
-  ethereumNode.init();
-
-  ethereumNodeRemote.start();
-
   // TODO: Settings.language relies on global.config object being set
   store.dispatch(setLanguageOnMain(Settings.language));
 
@@ -186,9 +182,15 @@ function onReady() {
 
   initializeListeners();
 
+  startMainWindow();
+
   checkForLegacyChain();
 
-  ClientBinaryManager.init();
+  await ClientBinaryManager.init();
+
+  ethereumNode.init();
+
+  ethereumNodeRemote.start();
 
   if (Settings.enableSwarmOnStart) {
     store.dispatch(toggleSwarm());
@@ -196,8 +198,6 @@ function onReady() {
 
   // Update menu (to show node switching possibilities)
   appMenu();
-
-  startMainWindow();
 }
 
 function enableSwarmProtocol() {
