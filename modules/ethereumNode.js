@@ -54,6 +54,10 @@ class EthereumNode extends EventEmitter {
     this.state = STATES.STOPPED;
     this.isExternalNode = false;
 
+    this._defaultNodeType = Settings.public.defaultNodeType || DEFAULT_NODE_TYPE;
+    this._defaultNetwork = Settings.public.defaultNetwork || DEFAULT_NETWORK;
+    this._defaultSyncMode = Settings.public.defaultSyncMode || DEFAULT_SYNCMODE;
+
     this._loadDefaults();
 
     this._node = null;
@@ -92,7 +96,7 @@ class EthereumNode extends EventEmitter {
   }
 
   get isGeth() {
-    return this._type === 'geth';
+    return this._type === this._defaultNodeType; // was 'geth';
   }
 
   get isMainNetwork() {
@@ -356,7 +360,7 @@ class EthereumNode extends EventEmitter {
 
         // if unable to start eth node then write geth to defaults
         if (nodeType === 'eth') {
-          Settings.saveUserData('node', 'geth');
+          Settings.saveUserData('node', this._defaultNodeType);
         }
 
         throw err;
@@ -407,8 +411,8 @@ class EthereumNode extends EventEmitter {
    */
   __startProcess(nodeType, network, binPath, _syncMode) {
     let syncMode = _syncMode;
-    if (nodeType === 'geth' && !syncMode) {
-      syncMode = DEFAULT_SYNCMODE;
+    if (nodeType === this._defaultNodeType && !syncMode) {
+      syncMode = this._defaultSyncMode;
     }
 
     return new Q((resolve, reject) => {
@@ -492,10 +496,10 @@ class EthereumNode extends EventEmitter {
         // Starts Main net
         default:
           args =
-            nodeType === 'geth'
+            nodeType === this._defaultNodeType
               ? ['--cache', process.arch === 'x64' ? '1024' : '512']
               : ['--unsafe-transactions'];
-          if (nodeType === 'geth' && syncMode === 'nosync') {
+          if (nodeType === this._defaultNodeType && syncMode === 'nosync') {
             args.push('--nodiscover', '--maxpeers=0');
           } else {
             args.push('--syncmode', syncMode);
@@ -596,7 +600,7 @@ class EthereumNode extends EventEmitter {
     // check for geth startup errors
     if (STATES.STARTING === this.state) {
       const dataStr = data.toString().toLowerCase();
-      if (nodeType === 'geth') {
+      if (nodeType === this._defaultNodeType) {
         if (dataStr.indexOf('fatal: error') >= 0) {
           const error = new Error(`Geth error: ${dataStr}`);
 
@@ -615,18 +619,18 @@ class EthereumNode extends EventEmitter {
     ethereumNodeLog.trace('Load defaults');
 
     this.defaultNodeType =
-      Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
+      Settings.nodeType || Settings.loadUserData('node') || this._defaultNodeType;
     this.defaultNetwork =
-      Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
+      Settings.network || Settings.loadUserData('network') || this._defaultNetwork;
     this.defaultSyncMode =
       Settings.syncmode ||
       Settings.loadUserData('syncmode') ||
-      DEFAULT_SYNCMODE;
+      this._defaultSyncMode;
 
     ethereumNodeLog.info(
       Settings.syncmode,
       Settings.loadUserData('syncmode'),
-      DEFAULT_SYNCMODE
+      this._defaultSyncMode
     );
     ethereumNodeLog.info(
       `Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${
