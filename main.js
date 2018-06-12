@@ -40,6 +40,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const nodeSync = require('./modules/nodeSync.js');
 
 // Define global vars; The preloader makes some globals available to the client.
 global.webviews = [];
@@ -121,6 +122,7 @@ app.on('before-quit', async event => {
 });
 
 let mainWindow;
+let splashWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -180,9 +182,11 @@ async function onReady() {
 
   checkTimeSync();
 
-  initializeListeners();
+  splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
+}
 
-  startMainWindow();
+async function kickStart() {
+  initializeListeners();
 
   checkForLegacyChain();
 
@@ -198,6 +202,16 @@ async function onReady() {
 
   // Update menu (to show node switching possibilities)
   appMenu();
+
+  if (splashWindow) {
+    splashWindow.show();
+  }
+
+  if (!Settings.inAutoTestMode) {
+    await handleNodeSync();
+  }
+
+  await startMainWindow();
 }
 
 function enableSwarmProtocol() {
@@ -265,6 +279,10 @@ function createCoreWindows() {
 
   // Delegating events to save window bounds on windowStateKeeper
   global.defaultWindow.manage(mainWindow.window);
+
+  if (!Settings.inAutoTestMode) {
+    splashWindow = Windows.create('splash');
+  }
 }
 
 function checkTimeSync() {
@@ -333,6 +351,31 @@ function initializeListeners() {
   });
 }
 
+function handleNodeSync() {
+    return new Q((resolve, reject) => {
+        nodeSync.on('nodeSyncing', (result) => {
+            Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+        });
+
+        nodeSync.on('stopped', () => {
+            Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+        });
+
+        nodeSync.on('error', (err) => {
+            log.error('Error syncing node', err);
+
+            reject(err);
+        });
+
+        nodeSync.on('finished', () => {
+            nodeSync.removeAllListeners('error');
+            nodeSync.removeAllListeners('finished');
+
+            resolve();
+        });
+    });
+}
+
 function startMainWindow() {
   log.info(`Loading Interface at ${global.interfaceAppUrl}`);
   initializeMainWindowListeners();
@@ -341,6 +384,7 @@ function startMainWindow() {
 
 function initializeMainWindowListeners() {
   mainWindow.on('ready', () => {
+    if (splashWindow) { splashWindow.close(); }
     mainWindow.show();
   });
 
