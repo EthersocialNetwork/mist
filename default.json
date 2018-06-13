@@ -1,0 +1,35 @@
+{
+  "name": "Ethereum",
+  "ticker": "ETH",
+  "symbol": "Ξ",
+  "walletName": "Ethereum Wallet",
+  "homepage": "https://github.com/ethereum/mist",
+  "appPrefix": "org.ethereum",
+  "githubUploadUrl": "https://uploads.github.com/repos/ethereum/mist/releases",
+  "githubApiUrl": "https://api.github.com/repos/ethereum/mist/releases",
+  "homeUrl": "https://ethereum.org",
+  "homeRedirect": "https://ethereum.org",
+  "walletHomeUrl": "https://ethereum.org",
+  "walletHomeRedirect": "https://wallet.ethereum.org",
+  "clientBinariesJson": "https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json",
+  "downloadUrl": "https://github.com/ethereum/mist/releases",
+  "wikiUrl": "https://github.com/ethereum/mist/wiki",
+  "gitterUrl": "https://gitter.im/ethereum/mist",
+  "issueUrl": "https://github.com/ethereum/mist/issues",
+  "binaryUrl": "https://www.ethereum.org/download/clientBinaries.json",
+  "keystorePath" : {
+    "darwin": "/Library/Ethereum/keystore",
+    "unix": "/.ethereum/keystore",
+    "win32": "\\Ethereum\\keystore"
+  },
+  "ipcPath": {
+    "darwin": "/Library/Ethereum/geth.ipc",
+    "unix": "/.ethereum/geth.ipc",
+    "win32": "\\\\.\\pipe\\geth.ipc"
+  },
+  "userPath": {
+    "darwin": "/Library/Ethereum/keystore",
+    "unix": "/.ethereum/keystore",
+    "win32": "\\Ethereum\\keystore"
+  }
+}
