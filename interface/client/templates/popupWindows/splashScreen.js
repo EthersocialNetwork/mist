@@ -21,6 +21,16 @@ Contains the last state of the data
 var lastSyncData = {},
     showNodeLog = true;
 
+/**
+Update the peercount
+
+@method getPeerCount
+*/
+var getPeerCount = function(template) {
+  web3.eth.net.getPeerCount(function(e, res) {
+    if (!e) TemplateVar.set(template, 'peerCount', res);
+  });
+};
 
 Template['popupWindows_splashScreen'].onCreated(function () {
     var template = this;
@@ -97,6 +107,8 @@ Template['popupWindows_splashScreen'].onCreated(function () {
             TemplateVar.set(template, 'showStartAppButton', true);
             TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
 
+            var peerCount = TemplateVar.get(template, 'peerCount');
+
             if (data !== false) {
                 // if state is "in progress" and we have data
                 showNodeLog = false;
@@ -106,7 +118,7 @@ Template['popupWindows_splashScreen'].onCreated(function () {
                 lastSyncData = _.extend(lastSyncData, data || {});
 
                 // Select the appropriate message
-                if (web3.net.peerCount > 0) {
+                if (peerCount > 0) {
                     // Check which state we are
                     if (0 < lastSyncData._displayKnownStates && (
                             Number(lastSyncData.pulledStates) !== Math.round(lastSyncData._displayState)
@@ -134,13 +146,13 @@ Template['popupWindows_splashScreen'].onCreated(function () {
 
             } else {
                 // It's not connected anymore
-                if (web3.net.peerCount > 1) {
+                if (peerCount > 1) {
                     translationString = 'mist.startScreen.nodeSyncFoundPeers';
                 } else {
                     translationString = 'mist.startScreen.nodeSyncConnecting';
                 }
 
-                TemplateVar.set(template, 'lastSyncData', { 'peers': web3.net.peerCount });
+                TemplateVar.set(template, 'lastSyncData', { 'peers': peerCount });
 
             }
 
@@ -150,6 +162,20 @@ Template['popupWindows_splashScreen'].onCreated(function () {
         }
     });
 
+    // CHECK PEER COUNT
+    this.peerCountIntervalId = null;
+
+    TemplateVar.set('peerCount', 0);
+    getPeerCount(template);
+
+    Meteor.clearInterval(this.peerCountIntervalId);
+    this.peerCountIntervalId = setInterval(function() {
+        getPeerCount(template);
+    }, 1000);
+});
+
+Template['popupWindows_splashScreen'].onDestroyed(function() {
+    Meteor.clearInterval(this.peerCountIntervalId);
 });
 
 Template['popupWindows_splashScreen'].helpers({
