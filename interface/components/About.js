@@ -5,7 +5,7 @@ class About extends React.Component {
     const appIconPath = `file://${window.dirname}/icons/${
       window.mistMode
     }/icon2x.png`;
-    const appName = window.mistMode === 'mist' ? 'Mist' : 'Ethereum Wallet';
+    const appName = window.mistMode === 'mist' ? 'Mist' : publicSettings.walletName || 'Ethereum Wallet';
 
     return (
       <div className="row popup-windows about">
@@ -29,11 +29,11 @@ class About extends React.Component {
             License {window.mist.license}
             <br />
             GitHub{' '}
-            <a href="https://github.com/ethereum/mist" target="_blank">
-              github.com/ethereum/mist
+            <a href="{publicSettings.homepage}" target="_blank">
+              {publicSettings.homepage}
             </a>
           </p>
-          <small>Copyright 2018 Ethereum Foundation</small>
+          <small>{publicSettings.copyright}</small>
         </div>
       </div>
     );
