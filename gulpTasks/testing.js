@@ -1,9 +1,17 @@
+const _ = require('underscore');
 const gulp = require('gulp');
 const mocha = require('gulp-spawn-mocha');
 const options = require('../gulpfile.js').options;
 const { version } = require('../package.json');
 const fs = require('fs');
 const colors = require('colors/safe');
+
+var settings = {};
+try {
+  _.extend(settings, require('../local.json'));
+} catch (error) {
+  _.extend(settings, require('../default.json'));
+}
 
 gulp.task('test', () => {
   return gulp.src([`./tests/${options.type}/${options.test}.test.js`]).pipe(
@@ -42,7 +50,7 @@ gulp.task('verify-artifacts', done => {
 
   // should be 'mist' or 'wallet'
   const productNamePrefix = productName =>
-    productName == 'mist' ? 'Mist' : 'Ethereum-Wallet';
+    productName == 'mist' ? 'Mist' : settings.walletName || 'Ethereum-Wallet';
 
   const checkArtifactsLinux = filenameFragment =>
     allFilesExists([
