@@ -100,7 +100,4 @@ script:
     fi
 
 after_success:
-  - if [ $TRAVIS_BRANCH == "master" ]; then
-      yarn dist:${PRODUCT} --$GULP_PLATFORM;
-    fi
-
+  - yarn dist:${PRODUCT} --$GULP_PLATFORM;
