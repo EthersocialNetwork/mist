@@ -148,6 +148,7 @@ Meteor.startup(function() {
         console.warn(
           `numeral.js couldn't set number formating: ${err.message}`
         );
+	numeral.language('en');
       }
       EthTools.setLocale(lang);
     }
