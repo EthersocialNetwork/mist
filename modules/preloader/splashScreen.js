@@ -13,6 +13,8 @@ ipcRenderer.send('backendAction_getLanguage');
 webFrame.setZoomLevelLimits(1, 1);
 
 window.ipc = ipcRenderer;
+window.i18n = require('../i18n.js');
+
 window.mist = mist();
 window.mistMode = remote.getGlobal('mode');
 window.dirname = remote.getGlobal('dirname');
