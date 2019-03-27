@@ -402,12 +402,14 @@ class Windows {
           url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
           show: true,
           electronOptions: {
+            alwaysOnTop: true,
             width: 400,
             height: 230,
             resizable: false,
             backgroundColor: '#F6F6F6',
             useContentSize: true,
             frame: false,
+            titleBarStyle: 'default',
             webPreferences: {
               preload: `${__dirname}/preloader/splashScreen.js`,
             },

@@ -180,7 +180,7 @@ class NodeInfo extends Component {
 
   renderLocalStats() {
     const { syncMode } = this.props.local;
-    const { currentBlock } = this.props.local.sync;
+    const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
 
     let syncText;
     if (syncMode) {
@@ -211,8 +211,12 @@ class NodeInfo extends Component {
           localStats = this.localStatsStartSync();
         }
       } else {
-        // Case: show progress
-        localStats = this.localStatsSyncProgress();
+        if (highestBlock - currentBlock < 1000 && this.props.active === 'local') {
+          localStats = this.localStatsSynced();
+        } else {
+          // Case: show progress
+          localStats = this.localStatsSyncProgress();
+        }
       }
     }
 
