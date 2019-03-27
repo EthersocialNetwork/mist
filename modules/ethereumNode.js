@@ -54,10 +54,6 @@ class EthereumNode extends EventEmitter {
     this.state = STATES.STOPPED;
     this.isExternalNode = false;
 
-    this._defaultNodeType = Settings.public.defaultNodeType || DEFAULT_NODE_TYPE;
-    this._defaultNetwork = Settings.public.defaultNetwork || DEFAULT_NETWORK;
-    this._defaultSyncMode = Settings.public.defaultSyncMode || DEFAULT_SYNCMODE;
-
     this._loadDefaults();
 
     this._node = null;
@@ -618,6 +614,10 @@ class EthereumNode extends EventEmitter {
   _loadDefaults() {
     ethereumNodeLog.trace('Load defaults');
 
+    this._defaultNodeType = Settings.public.defaultNodeType || DEFAULT_NODE_TYPE;
+    this._defaultNetwork = Settings.public.defaultNetwork || DEFAULT_NETWORK;
+    this._defaultSyncMode = Settings.public.defaultSyncMode || DEFAULT_SYNCMODE;
+
     this.defaultNodeType =
       Settings.nodeType || Settings.loadUserData('node') || this._defaultNodeType;
     this.defaultNetwork =
@@ -694,12 +694,12 @@ class EthereumNode extends EventEmitter {
   }
 
   async setNetwork() {
-    const network = await this.getNetwork();
+    const { type, network } = await this.getNetwork();
     this._network = network;
 
     store.dispatch({
       type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
-      payload: { network }
+      payload: { network, type }
     });
 
     store.dispatch({
@@ -713,15 +713,31 @@ class EthereumNode extends EventEmitter {
     const block = blockResult.result;
     switch (block.hash) {
       case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
-        return 'main';
+        return { type: 'mainnet', name: 'main' };
+      case '0x310dd3c4ae84dd89f1b46cfdd5e26c8f904dfddddc73f323b468127272e20e9f':
+        return { type: 'mainnet', name: 'ethersocial' };
       case '0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177':
-        return 'rinkeby';
+        return { type: 'testnet', name: 'rinkeby' };
       case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
-        return 'ropsten';
+        return { type: 'testnet', name: 'ropsten' };
       case '0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9':
-        return 'kovan';
+        return { type: 'testnet', name: 'kovan' };
       default:
-        return 'private';
+        if (Settings.public.knownNetworks) {
+          // search knownNetworks
+          for (var network in Settings.public.knownNetworks) {
+            if (Settings.public.knownNetworks[network].hash == block.hash) {
+              ethereumNodeLog.info('found network - ' + network + ':' + Settings.public.knownNetworks[network].type);
+              if (Settings.public.networks[network]) {
+                _.extend(Settings.public, Settings.public.networks[network]);
+                ethereumNodeLog.info('merge settings for ' + network + ':' + Settings.public.knownNetworks[network].type);
+              }
+              var type = Settings.public.knownNetworks[network].type;
+              return { type, network };
+            }
+          }
+        }
+        return { type: 'privatenet', name: 'private' };
     }
   }
 }

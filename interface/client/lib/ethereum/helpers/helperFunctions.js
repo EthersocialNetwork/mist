@@ -245,7 +245,7 @@ Helpers.detectNetwork = function(hash) {
     case '0x310dd3c4ae84dd89f1b46cfdd5e26c8f904dfddddc73f323b468127272e20e9f':
       console.log('Network is mainnet');
       network.type = 'mainnet';
-      network.name = 'Main';
+      network.name = 'Ethersocial';
       break;
 
     case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
