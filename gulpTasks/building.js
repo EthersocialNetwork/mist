@@ -118,7 +118,7 @@ gulp.task('move-wallet', cb => {
 gulp.task('build-interface', cb => {
   const interfaceBuildPath = path.resolve('build-interface');
   exec(
-    `yarn run meteor-build-client ${interfaceBuildPath} -s ../dist_mist/app/config.json -p ""`,
+    `yarn run meteor-build-client ${interfaceBuildPath} -s ../dist_${type}/app/config.json -p ""`,
     { cwd: 'interface' },
     (err, stdout) => {
       console.log(stdout);
