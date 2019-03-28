@@ -629,17 +629,21 @@ let menuTempl = function(webviews) {
     ]
   };
 
-  // add ethereum network menu
-  networkSubmenu.push({
-    label: 'Ethereum',
-    submenu: submenus['ethereum']
-  });
+  if (Settings.public.networkName == 'ethereum') {
+    // add ethereum network menu
+    networkSubmenu.push({
+      label: 'Ethereum',
+      submenu: submenus['ethereum']
+    });
+  }
 
-  // add ethersocial network menu
-  networkSubmenu.push({
-    label: 'EthersocialNetwork',
-    submenu: submenus['ethersocial']
-  });
+  if (Settings.public.networkName == 'ethersocial') {
+    // add ethersocial network menu
+    networkSubmenu.push({
+      label: 'EthersocialNetwork',
+      submenu: submenus['ethersocial']
+    });
+  }
 
   // add network switch
   devToolsMenu.push({
@@ -653,7 +657,7 @@ let menuTempl = function(webviews) {
     submenu: [
       {
         label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
-        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
+        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork && store.getState().nodes.network === 'main',
         checked: store.getState().nodes.local.syncMode === 'light',
         type: 'checkbox',
         click() {
