@@ -79,6 +79,7 @@ const tasks = [
   'switch-production',
   'build-interface',
   'copy-interface',
+  'custom-interface',
   'move-wallet',
   'copy-i18n',
   'build-dist',

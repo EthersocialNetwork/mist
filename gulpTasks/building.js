@@ -69,6 +69,11 @@ gulp.task('copy-build-folder-files', () => {
   if (settings.imgSrcDir) {
     imgSrcDir = settings.imgSrcDir;
   }
+
+  // copy all custom icons
+  gulp.src([`${imgSrcDir}icons/${type}/icon*`])
+    .pipe(gulp.dest(`./dist_${type}/app/icons/${type}`));
+
   return gulp
     .src([`${imgSrcDir}icons/${type}/*`, `${imgSrcDir}interface/public/images/dmg-background.jpg`])
     .pipe(gulp.dest(`./dist_${type}/build`));
@@ -130,7 +135,19 @@ gulp.task('build-interface', cb => {
 gulp.task('copy-interface', () => {
   return gulp
     .src(['build-interface/**/*'])
-    .pipe(gulp.dest(`dist_${type}/app/interface`));
+    .pipe(gulp.dest(`dist_${type}/app/interface`, { mode: 0644 }));
+});
+
+gulp.task('custom-interface', () => {
+  let imgSrcDir = './';
+  if (settings.imgSrcDir) {
+    imgSrcDir = settings.imgSrcDir;
+
+    // copy all custom image files
+    return gulp
+      .src([`${imgSrcDir}interface/public/images/*`])
+      .pipe(gulp.dest(`dist_${type}/app/interface/images`));
+  }
 });
 
 gulp.task('copy-i18n', () => {
