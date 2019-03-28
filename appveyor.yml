@@ -49,6 +49,7 @@ install:
   # installs JS dependencies
   - yarn install
   - cd interface && yarn install
+  - cd meteor-dapp-wallet/app && mkdir packages && cd packages && git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
 
 build_script:
   - ps: yarn build:$env:product --win --skipTasks=build-interface
