@@ -71,12 +71,12 @@ gulp.task('upload-queue', gulp.series('checksums', 'upload-binaries'));
 const skipTasks = options.skipTasks.replace(/\s/g, '').split(',');
 const tasks = [
   'clean-dist',
+  'switch-production',
   'pack-wallet',
   'copy-app-source-files',
   'transpile-main',
   'transpile-modules',
   'copy-build-folder-files',
-  'switch-production',
   'build-interface',
   'copy-interface',
   'move-wallet',

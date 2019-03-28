@@ -79,6 +79,8 @@ gulp.task('switch-production', cb => {
     production: true,
     mode: type
   };
+  const appPath = path.join(__dirname, `../dist_${type}`, 'app');
+  shell.mkdir('-p', appPath);
   config.public = settings;
   fs.writeFile(
     `./dist_${type}/app/config.json`,
@@ -89,17 +91,16 @@ gulp.task('switch-production', cb => {
 
 gulp.task('pack-wallet', cb => {
   del(['./wallet']).then(() => {
-    const fromPath = path.resolve('meteor-dapp-wallet', 'build');
-    const toPath = path.resolve('wallet');
-
-    if (!fs.existsSync(fromPath)) {
-      throw new Error(
-        `${fromPath} could not be found. Did you run "git submodule update --recursive?"`
-      );
-    }
-
-    shell.cp('-R', fromPath, toPath);
-    cb();
+    console.log('Use local wallet at meteor-dapp-wallet/app');
+    exec(
+      `cd meteor-dapp-wallet/app && \
+          npm install && \
+          ../../node_modules/.bin/meteor-build-client ../../wallet -s ../../dist_${type}/app/config.json -p ""`,
+      (err, stdout, stderr) => {
+        console.log(stdout, stderr);
+        cb(err);
+      }
+    );
   });
 });
 
