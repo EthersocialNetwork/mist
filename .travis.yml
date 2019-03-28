@@ -89,6 +89,7 @@ install:
   - meteor --version
 
   - yarn
+  - cd meteor-dapp-wallet/app && mkdir packages && cd packages && git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
 
 script:
   - yarn test:unit:once
