@@ -79,6 +79,7 @@ const tasks = [
   'copy-build-folder-files',
   'build-interface',
   'copy-interface',
+  'custom-interface',
   'move-wallet',
   'copy-i18n',
   'build-dist',
