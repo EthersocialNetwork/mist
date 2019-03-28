@@ -799,13 +799,21 @@ let menuTempl = function(webviews) {
       click() {
         shell.openExternal(Settings.public.wikiUrl);
       }
-    },
-    {
-      label: i18n.t('mist.applicationMenu.help.gitter'),
-      click() {
-        shell.openExternal(Settings.public.gitterUrl);
+    }
+  );
+
+  if (Settings.public && Settings.public.gitterUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.gitter'),
+        click() {
+          shell.openExternal(Settings.public.gitterUrl);
+        }
       }
-    },
+    );
+  }
+
+  helpMenu.push(
     {
       label: i18n.t('mist.applicationMenu.help.reportBug'),
       click() {
