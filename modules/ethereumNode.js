@@ -489,6 +489,17 @@ class EthereumNode extends EventEmitter {
           ];
           break;
 
+        // Starts Skynet network
+        case 'skynet':
+          args = [
+            '--skynet',
+            '--minerthreads',
+            '1',
+            '--ipcpath',
+            Settings.rpcIpcPath
+          ];
+          break;
+
         // Starts Main net
         default:
           args =
@@ -694,12 +705,12 @@ class EthereumNode extends EventEmitter {
   }
 
   async setNetwork() {
-    const { type, network } = await this.getNetwork();
-    this._network = network;
+    const { type, name } = await this.getNetwork();
+    this._network = name;
 
     store.dispatch({
       type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
-      payload: { network, type }
+      payload: { network: name, type }
     });
 
     store.dispatch({
@@ -733,7 +744,7 @@ class EthereumNode extends EventEmitter {
                 ethereumNodeLog.info('merge settings for ' + network + ':' + Settings.public.knownNetworks[network].type);
               }
               var type = Settings.public.knownNetworks[network].type;
-              return { type, network };
+              return { type, name: network };
             }
           }
         }

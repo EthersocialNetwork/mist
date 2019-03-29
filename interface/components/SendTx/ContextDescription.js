@@ -114,7 +114,7 @@ class ContextDescription extends Component {
 
   renderEtherTransferDescription() {
     let conversion;
-    if (this.props.network === 'main') {
+    if (this.props.type === 'mainnet') {
       const value = this.calculateTransferValue();
       if (value) {
         conversion = <span>About {value} USD</span>;
@@ -175,6 +175,7 @@ function mapStateToProps(state) {
     gasError: state.newTx.gasError,
     isNewContract: state.newTx.isNewContract,
     network: state.nodes.network,
+    type: state.nodes.type,
     params: state.newTx.params,
     etherPriceUSD: state.settings.etherPriceUSD,
     toIsContract: state.newTx.toIsContract,
