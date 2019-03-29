@@ -15,7 +15,7 @@ class ContextDescription extends Component {
   formattedBalance() {
     return EthTools.formatBalance(
       web3.utils.toBN(this.props.value || 0),
-      '0,0.00[0000000000000000]',
+      '0,0.00[0000000000000000] UNIT',
       'ether'
     );
   }
@@ -42,7 +42,7 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__send-eth-alert">
         Ether Amount:{' '}
-        <span className="bold">{this.formattedBalance()} ETH</span>
+        <span className="bold">{this.formattedBalance()}</span>
       </div>
     );
   }
@@ -130,7 +130,7 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__sentence">
         <div>
-          <span className="bold">Transfer</span> {this.formattedBalance()} Ether
+          <span className="bold">Transfer</span> {this.formattedBalance()}
         </div>
         <div className="context-description__subtext">{conversion}</div>
       </div>
