@@ -51,9 +51,12 @@ class TxRow extends Component {
       } else if (tx.networkId === 42) {
         subdomain = 'kovan.';
       }
+      // FIXME
+      let blockExplorer = `${subdomain}etherscan.io`;
+      blockExplorer = 'ethersocial.net';
       txHashLink = (
         <a
-          href={`https://${subdomain}etherscan.io/tx/${tx.hash}`}
+          href={`https://${blockExplorer}/tx/${tx.hash}`}
           target="_blank"
         >
           {tx.hash}
