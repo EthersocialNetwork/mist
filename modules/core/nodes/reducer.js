@@ -1,6 +1,7 @@
 export const initialState = {
   active: 'remote',
   network: 'main',
+  type: 'mainnet',
   changingNetwork: false,
   remote: {
     client: 'infura',
