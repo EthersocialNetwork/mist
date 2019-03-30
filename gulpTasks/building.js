@@ -95,12 +95,24 @@ gulp.task('switch-production', cb => {
 });
 
 gulp.task('pack-wallet', cb => {
+  var config = {
+    production: true,
+    mode: type
+  };
+  config.public = settings;
+  fs.writeFileSync(
+    './config.json',
+    JSON.stringify(config),
+    'utf-8'
+  );
+
   del(['./wallet']).then(() => {
     console.log('Use local wallet at meteor-dapp-wallet/app');
+    const configPath = path.join('..', '..', 'config.json');
+    const walletPath = path.join('..', '..', 'wallet');
     exec(
-      `cd meteor-dapp-wallet/app && \
-          npm install && \
-          ../../node_modules/.bin/meteor-build-client ../../wallet -s ../../dist_${type}/app/config.json -p ""`,
+      `yarn run meteor-build-client ${walletPath} -s ${configPath} -p ""`,
+      { cwd: 'meteor-dapp-wallet/app' },
       (err, stdout, stderr) => {
         console.log(stdout, stderr);
         cb(err);
