@@ -87,6 +87,7 @@ matrix:
 install:
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
   - meteor --version
+  - cp local.example.json local.json
 
   - yarn
   - cd meteor-dapp-wallet/app && mkdir packages && cd packages && git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
