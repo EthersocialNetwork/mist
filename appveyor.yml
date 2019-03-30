@@ -46,11 +46,16 @@ install:
  
   - node --version
 
+  # prepare meteor-dapp-wallet
+  - cp local.example.json local.json
+  - cd meteor-dapp-wallet/app && mkdir packages && cd packages
+  - git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
+  - cd .. && yarn install
+  - cd ../..
+
   # installs JS dependencies
   - yarn install
   - cd interface && yarn install
-  - cd meteor-dapp-wallet/app && mkdir packages && cd packages && git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
-  - cp local.example.json local.json
 
 build_script:
   #- ps: yarn build:$env:product --win --skipTasks=build-interface
