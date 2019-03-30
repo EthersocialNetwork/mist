@@ -51,7 +51,8 @@ install:
   - cd meteor-dapp-wallet/app && mkdir packages && cd packages
   - git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
   - cd .. && yarn install
-  - cd ../..
+  - cd ..\..\..
+  - cd
 
   # installs JS dependencies
   - yarn install
