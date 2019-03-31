@@ -12,8 +12,8 @@ environment:
     secure: ErXQkfrN/bX6LtqcjtnLGw==
   
   matrix:
-    - product: mist
     - product: wallet
+    - product: mist
 
 artifacts:
   - path: dist_mist\release\*
