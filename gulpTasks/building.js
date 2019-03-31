@@ -84,6 +84,8 @@ gulp.task('switch-production', cb => {
     production: true,
     mode: type
   };
+  const appPath = path.join(__dirname, `../dist_${type}`, 'app');
+  shell.mkdir('-p', appPath);
   config.public = settings;
   fs.writeFile(
     `./dist_${type}/app/config.json`,
@@ -94,17 +96,26 @@ gulp.task('switch-production', cb => {
 
 gulp.task('pack-wallet', cb => {
   del(['./wallet']).then(() => {
-    const fromPath = path.resolve('meteor-dapp-wallet', 'build');
-    const toPath = path.resolve('wallet');
+    const srcPath = path.resolve('meteor-dapp-wallet');
 
-    if (!fs.existsSync(fromPath)) {
+    if (!fs.existsSync(srcPath)) {
       throw new Error(
-        `${fromPath} could not be found. Did you run "git submodule update --recursive?"`
+        `${srcPath} could not be found. Did you run "git submodule update --recursive?"`
       );
     }
 
-    shell.cp('-R', fromPath, toPath);
-    cb();
+    console.log('Use local wallet at meteor-dapp-wallet/app');
+    const configPath = path.resolve(`dist_${type}/app/config.json`);
+    const walletPath = path.resolve('wallet');
+    let cmd = exec(
+      `yarn run meteor-build-client ${walletPath} -s ${configPath} -p " "`,
+      { cwd: 'meteor-dapp-wallet/app' },
+      (err, stdout, stderr) => {
+        console.log(stderr);
+        cb(err);
+      }
+    );
+    cmd.stdout.pipe(process.stdout);
   });
 });
 
@@ -122,14 +133,16 @@ gulp.task('move-wallet', cb => {
 
 gulp.task('build-interface', cb => {
   const interfaceBuildPath = path.resolve('build-interface');
-  exec(
-    `yarn run meteor-build-client ${interfaceBuildPath} -p ""`,
+  const configPath = path.resolve(`dist_${type}/app/config.json`);
+  let cmd = exec(
+    `yarn run meteor-build-client ${interfaceBuildPath} -s ${configPath} -p " "`,
     { cwd: 'interface' },
-    (err, stdout) => {
-      console.log(stdout);
+    (err, stdout, error) => {
+      console.log(error);
       cb(err);
     }
   );
+  cmd.stdout.pipe(process.stdout);
 });
 
 gulp.task('copy-interface', () => {
