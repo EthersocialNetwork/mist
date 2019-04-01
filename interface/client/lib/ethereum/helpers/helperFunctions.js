@@ -239,6 +239,38 @@ Detect Network
 @method detectNetwork
 **/
 Helpers.detectNetwork = function(hash) {
+  // known ethereum mainnet networks
+  var knownNetworks = {
+    callisto: {
+      type: 'mainnet',
+      hash: '0x82270b80fc90beb005505a9ef95039639968a0e81b2904ad30128c93d713d2c4'
+    },
+    ellasim: {
+      type: 'mainnet',
+      hash: '0x4d7df65052bb21264d6ad2d6fe2d5578a36be12f71bf8d0559b0c15c4dc539b5'
+    },
+    expanse: {
+      type: 'mainnet',
+      hash: '0x2fe75cf9ba10cb1105e1750d872911e75365ba24fdd5db7f099445c901fea895'
+    },
+    music: {
+      type: 'mainnet',
+      hash: '0x4eba28a4ce8dc0701f94c936a223a8429129b38ca9974ec0e92bf9234ac952e9'
+    },
+    ubiq: {
+      type: 'mainnet',
+      hash: '0x406f1b7dd39fca54d8c702141851ed8b755463ab5b560e6f19b963b4047418af'
+    }
+  };
+
+  // load known Networks
+  if (publicSettings.knownNetworks) {
+    console.log('load known networks...');
+    for (var key in publicSettings.knownNetworks) {
+      knownNetworks[key] = publicSettings.knownNetworks[key];
+    }
+  }
+
   var network = {};
 
   switch (hash) {
@@ -274,8 +306,25 @@ Helpers.detectNetwork = function(hash) {
 
     default:
       console.log('Network is privatenet');
-      network.type = 'privatenet';
-      network.name = 'Private';
+
+      var found = false;
+      // search knownNetworks
+      for (var network in knownNetworks) {
+        if (knownNetworks[network].hash == block.hash) {
+          network.type = knownNetworks[network].type;
+          network.name = network;
+          if (publicSettings.networks[network]) {
+            _.extend(publicSettings, publicSettings.networks[network]);
+          }
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        network.type = 'privatenet';
+        network.name = 'Private';
+      }
+      break;
   }
 
   return network;
