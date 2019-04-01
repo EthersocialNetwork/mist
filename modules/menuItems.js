@@ -720,7 +720,7 @@ let menuTempl = function(webviews) {
     );
   }
 
-  if (global.mode !== 'wallet') {
+  if (global.mode !== 'wallet' && Settings.public.networkName == 'ethereum') {
     devToolsMenu.push(
       {
         type: 'separator'
