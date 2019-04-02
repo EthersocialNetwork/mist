@@ -326,12 +326,19 @@ gulp.task('build-nsis', done => {
 
   const typeString = `-DTYPE=${type}`;
   const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
+  const networkString = `-DNETWORK=${settings.name}`;
+  const portString = `-DPORT=${settings.port}`;
+  const gethIdString = `-DGETHID=${settings.defaultNodeTypeId}`;
+  const gethString = `-DGETH=${settings.defaultNodeType}`;
+  const issueUrlString = `-DISSUEURL=${settings.issueUrl}`;
+  const downloadUrlString = `-DDOWNLOADURL=${settings.downloadUrl}`;
+  const homeUrlString = `-DHOMEURL=${settings.walletHomeUrl}`;
   const versionParts = version.split('.');
   const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${
     versionParts[1]
   } -DVERSIONBUILD=${versionParts[2]}`;
 
-  const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
+  const cmdString = `makensis ${versionString} ${typeString} ${appNameString} ${networkString} ${portString} ${gethIdString} ${gethString} ${issueUrlString} ${downloadUrlString} ${homeUrlString} scripts/windows-installer.nsi`;
 
   exec(cmdString, done);
 });
