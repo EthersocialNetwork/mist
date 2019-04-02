@@ -1,5 +1,5 @@
 import ethereumNodeRemote from '../../ethereumNodeRemote';
-import { InfuraEndpoints } from '../../constants';
+import { InfuraEndpoints, KnownNetworks } from '../../constants';
 
 export function changeNetwork(network) {
   return dispatch => {
@@ -102,9 +102,26 @@ export function setActiveNode() {
       return;
     }
 
-    const supportedRemoteNetworks = Object.keys(
+    let supportedRemoteNetworks = Object.keys(
       InfuraEndpoints.ethereum.websockets
     ).map(network => network.toLowerCase());
+
+    // all other known networks
+    let knownNetworks = Object.keys(KnownNetworks).map(network => network.toLowerCase());
+    let allKnownNetworks = [];
+    knownNetworks.forEach((name) => {
+       if (KnownNetworks[name].websockets) {
+         allKnownNetworks.push(name);
+         let subnetworks = Object.keys(KnownNetworks[name].websockets).map(net => net.toLowerCase());
+         subnetworks.forEach((n) => {
+           if (n !== 'main') {
+             allKnownNetworks.push(n);
+           }
+         });
+       }
+    });
+    // merge all known networks
+    supportedRemoteNetworks = supportedRemoteNetworks.concat(allKnownNetworks);
 
     if (supportedRemoteNetworks.indexOf(network) === -1) {
       // If unsupported network, ensure active is 'local'

@@ -18,3 +18,14 @@ export const InfuraEndpoints = {
     rpc: 'https://ipfs.infura.io:5001'
   }
 };
+
+export const KnownNetworks = {
+  ethersocial: {
+    http: {
+      Main: 'https://api.esn.gonspool.com'
+    },
+    websockets: {
+      Main: 'wss://wsnode.esnnode.org'
+    }
+  }
+};

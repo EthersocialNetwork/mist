@@ -4,7 +4,7 @@ import logger from './utils/logger';
 import Sockets from './socketManager';
 import Settings from './settings';
 import { resetRemoteNode, remoteBlockReceived } from './core/nodes/actions';
-import { InfuraEndpoints } from './constants';
+import { InfuraEndpoints, KnownNetworks } from './constants';
 
 const ethereumNodeRemoteLog = logger.create('EthereumNodeRemote');
 
@@ -198,6 +198,8 @@ class EthereumNodeRemote extends EventEmitter {
         return InfuraEndpoints.ethereum.websockets.Rinkeby;
       case 'kovan':
         return InfuraEndpoints.ethereum.websockets.Kovan;
+      case 'ethersocial':
+        return KnownNetworks.ethersocial.websockets.Main;
       default:
         ethereumNodeRemoteLog.error(`Unsupported network type: ${network}`);
         return null;
