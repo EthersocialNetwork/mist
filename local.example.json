@@ -92,6 +92,7 @@
     "unix": "/.ethersocial/keystore",
     "win32": "\\Ethersocial\\keystore"
   },
+  "compatIpcPath": "gesn.ipc",
   "ipcPath": {
     "darwin": "/Library/Ethersocial/geth.ipc",
     "unix": "/.ethersocial/geth.ipc",

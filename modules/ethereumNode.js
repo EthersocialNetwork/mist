@@ -321,8 +321,14 @@ class EthereumNode extends EventEmitter {
         this._node = proc;
         this.state = STATES.STARTED;
 
-        Settings.saveUserData('node', this._type);
-        Settings.saveUserData('network', this._network);
+        // do not save data for compatible mode
+        let client = ClientBinaryManager.getClient(this._type);
+        if (!client) {
+          ethereumNodeLog.error('Compatible mode!');
+        } else {
+          Settings.saveUserData('node', this._type);
+          Settings.saveUserData('network', this._network);
+        }
         Settings.saveUserData('syncmode', this._syncMode);
 
         return this._socket
@@ -383,13 +389,22 @@ class EthereumNode extends EventEmitter {
       payload: { syncMode }
     });
 
-    const client = ClientBinaryManager.getClient(nodeType);
+    let client = ClientBinaryManager.getClient(nodeType);
     let binPath;
 
     if (client) {
       binPath = client.binPath;
     } else {
-      throw new Error(`Node "${nodeType}" binPath is not available.`);
+      // fix for compatible issue
+      let compatNodeType = Settings.public.compatNodeType;
+      if (compatNodeType) {
+        client = ClientBinaryManager.getClient(compatNodeType);
+      }
+      if (!client) {
+        throw new Error(`Node "${nodeType}" binPath is not available.`);
+      }
+      binPath = client.binPath;
+      this._defaultNodeType = compatNodeType;
     }
 
     ethereumNodeLog.info(`Start node using ${binPath}`);
@@ -629,10 +644,23 @@ class EthereumNode extends EventEmitter {
     this._defaultNetwork = Settings.public.defaultNetwork || DEFAULT_NETWORK;
     this._defaultSyncMode = Settings.public.defaultSyncMode || DEFAULT_SYNCMODE;
 
+    let node = Settings.loadUserData('node');
+    let network = Settings.loadUserData('network');
+
+    if (network === DEFAULT_NETWORK) {
+      network = null;
+    }
+
+    // check default nodeType
+    if ([ DEFAULT_NODE_TYPE, 'ubiq', 'gexp', 'gesn' ].indexOf(node) >= 0) {
+      node = this._defaultNodeType;
+    }
+
     this.defaultNodeType =
-      Settings.nodeType || Settings.loadUserData('node') || this._defaultNodeType;
+      Settings.nodeType || node || this._defaultNodeType;
     this.defaultNetwork =
-      Settings.network || Settings.loadUserData('network') || this._defaultNetwork;
+      Settings.network || network || this._defaultNetwork;
+
     this.defaultSyncMode =
       Settings.syncmode ||
       Settings.loadUserData('syncmode') ||

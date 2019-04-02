@@ -186,6 +186,14 @@ class Settings {
 
     settingsLog.debug(`IPC path: ${ipcPath}`);
 
+    // check if the file exists
+    try {
+      fs.accessSync(ipcPath, fs.R_OK);
+    } catch (e) {
+      // fix for compatible geth.ipc path like as 'gesn.ipc' for ESN, 'gubiq.ipc' for Ubiq
+      ipcPath = ipcPath.replace(/([a-zA-Z]+).ipc$/, this.public.compatIpcPath || 'geth.ipc');
+      settingsLog.debug(`Fixed IPC path: ${ipcPath}`);
+    }
     return ipcPath;
   }
 
