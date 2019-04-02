@@ -96,7 +96,7 @@ class EthereumNode extends EventEmitter {
   }
 
   get isMainNetwork() {
-    return this.network === 'main';
+    return store.getState().nodes.type === 'mainnet';
   }
 
   get isTestNetwork() {
