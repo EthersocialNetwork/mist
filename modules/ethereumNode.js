@@ -629,10 +629,23 @@ class EthereumNode extends EventEmitter {
     this._defaultNetwork = Settings.public.defaultNetwork || DEFAULT_NETWORK;
     this._defaultSyncMode = Settings.public.defaultSyncMode || DEFAULT_SYNCMODE;
 
+    let node = Settings.loadUserData('node');
+    let network = Settings.loadUserData('network');
+
+    if (network === DEFAULT_NETWORK) {
+      network = null;
+    }
+
+    // check default nodeType
+    if ([ DEFAULT_NODE_TYPE, 'ubiq', 'gexp', 'gesn' ].indexOf(node) >= 0) {
+      node = this._defaultNodeType;
+    }
+
     this.defaultNodeType =
-      Settings.nodeType || Settings.loadUserData('node') || this._defaultNodeType;
+      Settings.nodeType || node || this._defaultNodeType;
     this.defaultNetwork =
-      Settings.network || Settings.loadUserData('network') || this._defaultNetwork;
+      Settings.network || network || this._defaultNetwork;
+
     this.defaultSyncMode =
       Settings.syncmode ||
       Settings.loadUserData('syncmode') ||
