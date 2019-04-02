@@ -62,6 +62,7 @@
   "compatNodeType": "gesn",
   "networkName": "ethersocial",
   "name": "Ethersocial",
+  "port": "50505",
   "endpoints": {
     "Main": "https://api.esn.gonspool.com",
     "Ropsten": "https://api.skynet.gonspool.com",
