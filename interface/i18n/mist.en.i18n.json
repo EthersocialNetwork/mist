@@ -287,6 +287,8 @@
       "importAccount": {
         "doYouHaveAWalletFile": "Do you have a wallet file?",
         "walletFileDescription":
+          "<p>Move any wallet file here to import.</p>",
+        "walletFilePresaleDescription":
           "<p>Move any wallet file here to import.<br>If you participated in the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
         "dropFilesHere": "Drop wallet file",
         "importing": "Importing...",

@@ -30,7 +30,7 @@
       },
       "file": {
         "label": "계정",
-        "importPresale": "계정 가져오기",
+        "importPresale": "계정 불러오기",
         "newAccount": "새 계정",
         "backup": "백업",
         "backupKeyStore": "키스토어 백업",
@@ -238,8 +238,10 @@
       "importAccount": {
         "doYouHaveAWalletFile": "지갑 파일을 가지고 있나요?",
         "walletFileDescription":
-          "<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이라는 파일을 가지고 있을 것입니다. 세일이 끝나고 다운로드를 받았거나 이메일로 받았을 것입니다.</p>",
-        "dropFilesHere": "프리세일 파일을 가져다 놓기",
+          "<p>불러오기 위한 지갑 파일을 가져다 놓으세요.</p>",
+        "walletFilePresaleDescription":
+          "<p>불러오기 위한 지갑 파일을 가져다 놓으세요.<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이라는 파일을 가지고 있을 것입니다. 세일이 끝나고 다운로드를 받았거나 이메일로 받았을 것입니다.</p>",
+        "dropFilesHere": "파일을 가져다 놓기",
         "importing": "불러오는 중...",
         "buttons": {
           "showPassword": "암호보기"
