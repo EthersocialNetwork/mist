@@ -19,9 +19,15 @@
       "gethIpc": "geth.ipc",
       "supportedUnits": [
         { "text": "USD", "value": "usd" },
+        { "text": "BTC", "value": "btc" },
+        { "text": "BRL", "value": "brl" },
+        { "text": "CNY", "value": "cny" },
+        { "text": "EUR", "value": "eur" },
+        { "text": "GBP", "value": "gbp" },
+        { "text": "JPY", "value": "jpy" },
         { "text": "KRW", "value": "krw" }
       ],
-      "supportedCurrencies": ["USD", "KRW"],
+      "supportedCurrencies": ["USD", "BTC", "BRL", "CNY", "EUR", "GBP", "JPY", "KRW"],
       "tokens": [
         {
           "network": "main",
@@ -53,6 +59,7 @@
   "defaultNodeTypeId": "Geth",
   "defaultSyncMode": "fast",
   "defaultNetwork": "ethersocial",
+  "compatNodeType": "gesn",
   "networkName": "ethersocial",
   "name": "Ethersocial",
   "endpoints": {
@@ -63,7 +70,7 @@
   },
   "title": "ESN Wallet",
   "ticker": "ESN",
-  "supportedCurrencies": ["USD", "KRW"],
+  "supportedCurrencies": ["USD", "BTC", "BRL", "CNY", "EUR", "GBP", "JPY", "KRW"],
   "ethereum": "esn",
   "Ethereum": "Ethersocial",
   "ether": "esn",
