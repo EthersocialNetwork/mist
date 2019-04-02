@@ -215,6 +215,7 @@
         "블록 다운로드 중 __highestBlock__ 중 __displayBlock__, <br> 체인구조 다운로드 __displayKnownStates__ 중 __displayState__",
       "nodeSyncFoundPeers": "__peers__ 피어 연결중...",
       "launchApp": "어플리케이션 실행",
+      "retryConnection": "접속 재시도",
       "clientBinaries": {
         "scanning": "노드 업데이트 확인중...",
         "downloading": "새로운 노드 다운로드중...",
