@@ -597,7 +597,6 @@ class Windows {
       'updateAvailable',
       'clientUpdateAvailable',
       'connectAccount',
-      'sendTx',
       'txHistory'
     ];
     if (
