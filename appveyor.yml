@@ -58,7 +58,10 @@ install:
 
   # installs JS dependencies
   - yarn install
-  - cd interface && yarn install
+  - cd interface && mkdir packages && cd packages && git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
+  - cd .. && yarn install
+  - cd ..\..
+  - cd
 
 build_script:
   - ps: yarn build:$env:product --win
