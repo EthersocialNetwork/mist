@@ -440,7 +440,7 @@ class Windows {
           url: `${global.interfacePopupsUrl}#about`,
           electronOptions: {
             width: 420,
-            height: 230,
+            height: 290,
             alwaysOnTop: true
           }
         };
@@ -460,7 +460,7 @@ class Windows {
         return {
           electronOptions: {
             width: 600,
-            height: 370,
+            height: 440,
             alwaysOnTop: true
           }
         };
