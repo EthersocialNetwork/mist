@@ -94,6 +94,9 @@
   "downloadUrl": "https://github.com/EthersocialNetwork/mist/releases",
   "wikiUrl": "https://github.com/EthersocialNetwork/mist/wiki",
   "issueUrl": "https://github.com/EthersocialNetwork/mist/issues",
+  "redditUrl": "https://www.reddit.com/r/ethersocial",
+  "discordUrl": "https://discord.gg/rVzc4aV",
+  "twitterUrl": "https://twitter.com/ESNfoundation",
   "allowedDownloadUrlsRegexString": "^https:\\/\\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)?ethereum\\.org\\/|[A-Za-z0-9_-]+\\.blob\\.core\\.windows\\.net\\/|github\\.com\\/[A-Za-z0-9_-]+\\/(?:[a-zA-Z_-]+)\\/releases\\/download\\/|bintray\\.com\\/artifact\\/download\\/karalabe\\/ethereum\\/)(?:.+)",
   "keystorePath" : {
     "darwin": "/Library/Ethersocial/keystore",
