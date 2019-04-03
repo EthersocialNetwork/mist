@@ -482,7 +482,7 @@ class Windows {
             alwaysOnTop: true
           }
         };
-      case 'sendTx':
+      case 'sendTransactionConfirmation':
         return {
           electronOptions: {
             width: 580,

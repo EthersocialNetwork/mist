@@ -59,16 +59,8 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
   const senderWindow = Windows.getById(windowId);
 
   if (senderWindow) {
-    const { x, y } = senderWindow.window.getBounds();
-    senderWindow.window.setBounds(
-      {
-        width,
-        height: height | 0,
-        x,
-        y
-      },
-      true
-    );
+    senderWindow.window.setSize(width, height | 0);
+    senderWindow.window.center(); // ?
   }
 });
 
