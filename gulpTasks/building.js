@@ -171,6 +171,35 @@ gulp.task('copy-i18n', () => {
     .pipe(gulp.dest(`./dist_${type}/app`));
 });
 
+// generate tab-i18n.json
+gulp.task('tap-i18n', cb => {
+  const i18nPath = path.join('interface', 'public', 'i18n');
+  shell.mkdir('-p', i18nPath);
+
+  let i18nConf = fs.readFileSync('./interface/project-tap.i18n');
+  i18nConf = JSON.parse(i18nConf);
+
+  const resources = {};
+  i18nConf.supported_languages.forEach(lang => {
+    let uiTranslations = {};
+    try {
+      if (fs.existsSync(`./interface/i18n/app.${lang}.i18n.json`)) {
+        uiTranslations = require(`../interface/i18n/app.${lang}.i18n.json`);
+      }
+    } catch (e) {
+      // ignore
+    }
+    let mistTranslations = require(`../interface/i18n/mist.${lang}.i18n.json`);
+    resources[lang] = { project: _.extend(uiTranslations, mistTranslations) };
+
+    let out = JSON.stringify(resources[lang]);
+    fs.writeFileSync(path.join(i18nPath, `${lang}.json`), out);
+  });
+
+  let out = JSON.stringify(resources);
+  fs.writeFile(path.join(i18nPath, 'tap-i18n.json'), out, cb);
+});
+
 gulp.task('build-dist', cb => {
   const appPackageJson = _.extend({}, require('../package.json'), {
     // eslint-disable-line global-require
