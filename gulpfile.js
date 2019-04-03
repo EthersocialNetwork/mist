@@ -77,6 +77,7 @@ const tasks = [
   'transpile-main',
   'transpile-modules',
   'copy-build-folder-files',
+  'tap-i18n',
   'build-interface',
   'copy-interface',
   'custom-interface',
