@@ -33,6 +33,11 @@ function renderReactComponentPopup(component) {
       </Provider>,
       document.getElementById('react-entry')
     );
+  } else {
+    render(
+      <div />,
+      document.getElementById('react-entry')
+    );
   }
 }
 
