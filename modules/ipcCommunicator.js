@@ -199,6 +199,11 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
   });
 });
 
+// retryConnection
+ipc.on('retryConnection', () => {
+  ethereumNode.init();
+});
+
 // import presale wallet
 ipc.on('backendAction_importWalletFile', (e, path, pw) => {
   const spawn = require('child_process').spawn; // eslint-disable-line global-require
