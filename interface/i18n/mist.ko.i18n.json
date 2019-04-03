@@ -64,7 +64,10 @@
         "label": "도움말",
         "reportBug": "깃허브에 이슈 보고",
         "mistWiki": "문제 해결 및 도움말",
-        "gitter": "Gitter에 있는 Mist채널"
+        "gitter": "Gitter에 있는 Mist채널",
+        "twitter": "트위터",
+        "discord": "디스코드",
+        "reddit": "레딧"
       }
     },
     "errors": {
