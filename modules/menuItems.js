@@ -819,6 +819,47 @@ let menuTempl = function(webviews) {
     }
   );
 
+  if (Settings.public && (Settings.public.discordUrl || Settings.public.twitterUrl || Settings.public.redditUrl)) {
+    helpMenu.push(
+      {
+        type: 'separator'
+      }
+    );
+  }
+
+  if (Settings.public && Settings.public.discordUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.discord'),
+        click() {
+          shell.openExternal(Settings.public.discordUrl);
+        }
+      }
+    );
+  }
+
+  if (Settings.public && Settings.public.redditUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.reddit'),
+        click() {
+          shell.openExternal(Settings.public.redditUrl);
+        }
+      }
+    );
+  }
+
+  if (Settings.public && Settings.public.twitterUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.twitter'),
+        click() {
+          shell.openExternal(Settings.public.twitterUrl);
+        }
+      }
+    );
+  }
+
   menu.push({
     label: i18n.t('mist.applicationMenu.help.label'),
     role: 'help',
