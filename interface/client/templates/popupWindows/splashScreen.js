@@ -268,5 +268,8 @@ Template['popupWindows_splashScreen'].events({
 
     'click .retry-connection': function () {
         ipc.send('retryConnection');
+    },
+    'click .quit-connection': function () {
+        ipc.send('backendAction_closeApp');
     }
 });
