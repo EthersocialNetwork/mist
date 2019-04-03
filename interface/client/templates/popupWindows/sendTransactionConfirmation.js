@@ -286,9 +286,17 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   totalAmount: function() {
     var amount = EthTools.formatBalance(
       web3.utils.toBN(this.value || 0),
-      '0,0.00[0000000000000000]',
+      '0,0.00[0000000000000000] UNIT',
       'ether'
     );
+
+    var unitPos = amount.indexOf(' ');
+    var unit = amount.substr(unitPos + 1);
+    if (unit == 'ETHER' && EthTools.getAlias)
+      unit = EthTools.getAlias();
+
+    amount = amount.substr(0, unitPos);
+
     var dotPos = ~amount.indexOf('.')
       ? amount.indexOf('.') + 3
       : amount.indexOf(',') + 3;
@@ -297,7 +305,8 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
       ? amount.substr(0, dotPos) +
           '<small style="font-size: 0.5em;">' +
           amount.substr(dotPos) +
-          '</small>'
+          '</small>' +
+          ' <span class="unit">' + unit + '</span>'
       : '0';
   },
   /**
@@ -595,12 +604,14 @@ Set TemplateVar 'network'
 */
 var setNetwork = function(template) {
   TemplateVar.set(template, 'network', store.getState().nodes.network);
+  TemplateVar.set(template, 'nodetype', store.getState().nodes.type);
 
   this.storeUnsubscribe = store.subscribe(() => {
     if (
       store.getState().nodes.network !== TemplateVar.get(template, 'network')
     ) {
       TemplateVar.set(template, 'network', store.getState().nodes.network);
+      TemplateVar.set(template, 'nodetype', store.getState().nodes.type);
     }
   });
 };

@@ -27,7 +27,7 @@
                     </div>
                     <div class="connection">
                         <div class="amount">
-                            {{{totalAmount}}} <span class="unit">ETHER</span>
+                            {{{totalAmount}}}
                         </div>
                         {{#if TemplateVar.get "executionFunction" }}
                             <div class='function-signature {{#if TemplateVar.get "hasSignature"}} has-signature {{/if}} '>
@@ -45,7 +45,11 @@
                             {{/if}}
                             {{> dapp_identicon identity=to class="dapp-large"}}
                             <br>
-                            <a href="http://etherscan.io/address/{{to}}#code" class="simptip-position-bottom simptip-movable" data-tooltip="{{to}}" target="_blank">{{shortenAddress to}}</a>
+                            {{#if $eq (TemplateVar.get "network") "main"}}
+                                <a href="http://etherscan.io/address/{{to}}#code" class="simptip-position-bottom simptip-movable" data-tooltip="{{to}}" target="_blank">{{shortenAddress to}}</a>
+                            {{else}}
+                                <a href="{{publicSettings.blockExplorerAddrUrl}}{{to}}#code" class="simptip-position-bottom simptip-movable" data-tooltip="{{to}}" target="_blank">{{shortenAddress to}}</a>
+                            {{/if}}
                         {{else}}
                             <i class="circle-icon icon-doc"></i>
                             <br>
@@ -183,7 +187,7 @@
                 {{else}}
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.sendTransactionConfirmation.enterPassword'}}">
 
-                    {{#if $neq (TemplateVar.get "network") "main"}}
+                    {{#if $neq (TemplateVar.get "nodetype") "mainnet"}}
                         <div class="network">
                             {{TemplateVar.get "network"}}
                         </div>
