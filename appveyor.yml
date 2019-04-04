@@ -40,8 +40,9 @@ install:
   - git submodule update --init --recursive 
 
   # installs global dependencies
-  - choco install meteor 
+  - choco install meteor --params="'/RELEASE:1.8.0.2'"
   - choco install nsis
+  - choco install 7zip
 
   - refreshenv
   - ps: refreshenv
@@ -55,6 +56,13 @@ install:
   - cd .. && yarn install
   - cd ..\..\..
   - cd
+
+  - meteor --version
+  # download 7za
+  - curl -L http://www.7-zip.org/a/7z1900-extra.7z -o extra.7z
+  - 7z.exe x extra.7z
+  - copy x64\7za.exe "C:\\Program Files\\7-zip\\7za.exe"
+  - copy "C:\\Program Files\\7-zip\\7za.exe" C:\Users\appveyor\AppData\Local\.meteor\packages\meteor-tool\1.8.0_2\mt-os.windows.x86_64\dev_bundle\bin\7z.exe && exit 0
 
   # installs JS dependencies
   - yarn install
