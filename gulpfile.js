@@ -23,9 +23,11 @@ if (process.platform === 'darwin') {
 const args = process.argv.slice(2);
 const options = minimist(args, {
   string: ['walletSource', 'test', 'skipTasks'],
-  boolean: _.flatten(['wallet', platforms]),
+  boolean: _.flatten(['wallet', 'debug', 'verbose', platforms]),
   default: {
     wallet: false,
+    debug: false,
+    verbose: false,
     walletSource: 'master',
     test: 'basic',
     skipTasks: ''

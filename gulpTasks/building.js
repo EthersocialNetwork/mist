@@ -107,8 +107,10 @@ gulp.task('pack-wallet', cb => {
     console.log('Use local wallet at meteor-dapp-wallet/app');
     const configPath = path.resolve(`dist_${type}/app/config.json`);
     const walletPath = path.resolve('wallet');
+    let opts = options.debug ? '--debug ' : '';
+    opts += options.verbose ? '--verbose' : '';
     let cmd = exec(
-      `yarn run meteor-build-client ${walletPath} -s ${configPath} -p " "`,
+      `yarn run meteor-build-client ${walletPath} -s ${configPath} -p " " ${opts}`,
       { cwd: 'meteor-dapp-wallet/app' },
       (err, stdout, stderr) => {
         console.log(stderr);
@@ -134,8 +136,10 @@ gulp.task('move-wallet', cb => {
 gulp.task('build-interface', cb => {
   const interfaceBuildPath = path.resolve('build-interface');
   const configPath = path.resolve(`dist_${type}/app/config.json`);
+  let opts = options.debug ? '--debug ' : '';
+  opts += options.verbose ? '--verbose' : '';
   let cmd = exec(
-    `yarn run meteor-build-client ${interfaceBuildPath} -s ${configPath} -p " "`,
+    `yarn run meteor-build-client ${interfaceBuildPath} -s ${configPath} -p " " ${opts}`,
     { cwd: 'interface' },
     (err, stdout, error) => {
       console.log(error);
