@@ -72,7 +72,7 @@ install:
   - cd
 
 build_script:
-  - ps: yarn build:$env:product --win --verbose
+  - ps: yarn build:$env:product --win --verbose --debug
   - ps: yarn dist:$env:product
 
 test_script:
