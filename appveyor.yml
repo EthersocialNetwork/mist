@@ -7,6 +7,7 @@ environment:
   # increasing `meteor build` memory allocation
   # https://github.com/meteor/meteor/issues/9568
   #TOOL_NODE_FLAGS: "--max-old-space-size=4096"
+  TIMEOUT_SCALE_FACTOR: 8
 
   APPVEYOR_RDP_PASSWORD:
     secure: ErXQkfrN/bX6LtqcjtnLGw==
@@ -72,7 +73,9 @@ install:
   - cd
 
 build_script:
-  - ps: yarn build:$env:product --win --verbose --debug
+  - ps: |
+      $env:METEOR_PROFILE = 1000
+      yarn build:$env:product --win --verbose --debug
   - ps: yarn dist:$env:product
 
 test_script:
