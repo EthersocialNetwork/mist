@@ -111,7 +111,7 @@ gulp.task('pack-wallet', cb => {
     opts += options.verbose ? '--verbose' : '';
     let cmd = exec(
       `yarn run meteor-build-client ${walletPath} -s ${configPath} -p " " ${opts}`,
-      { cwd: 'meteor-dapp-wallet/app' },
+      { cwd: 'meteor-dapp-wallet/app', maxBuffer: 700*1024 },
       (err, stdout, stderr) => {
         console.log(stderr);
         cb(err);
@@ -140,7 +140,7 @@ gulp.task('build-interface', cb => {
   opts += options.verbose ? '--verbose' : '';
   let cmd = exec(
     `yarn run meteor-build-client ${interfaceBuildPath} -s ${configPath} -p " " ${opts}`,
-    { cwd: 'interface' },
+    { cwd: 'interface', maxBuffer: 700*1024 },
     (err, stdout, error) => {
       console.log(error);
       cb(err);

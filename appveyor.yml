@@ -6,7 +6,8 @@ environment:
 
   # increasing `meteor build` memory allocation
   # https://github.com/meteor/meteor/issues/9568
-  #TOOL_NODE_FLAGS: "--max-old-space-size=4096"
+  TOOL_NODE_FLAGS: "--max-old-space-size=4096"
+  TIMEOUT_SCALE_FACTOR: 8
 
   APPVEYOR_RDP_PASSWORD:
     secure: ErXQkfrN/bX6LtqcjtnLGw==
@@ -25,8 +26,6 @@ cache:
   - node_modules
   - '%LOCALAPPDATA%\electron\Cache'
   - '%LOCALAPPDATA%\electron-builder\cache'
-  - '%LOCALAPPDATA%\.meteor'
-  - '%LOCALAPPDATA%\Yarn'
 
 init:
   # enabling RDP for debugging purposes
@@ -72,7 +71,9 @@ install:
   - cd
 
 build_script:
-  - ps: yarn build:$env:product --win --verbose --debug
+  - ps: |
+      $env:METEOR_PROGRESS_DEBUG = 1
+      yarn build:$env:product --win --verbose --debug
   - ps: yarn dist:$env:product
 
 test_script:
