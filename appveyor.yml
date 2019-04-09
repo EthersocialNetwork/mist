@@ -26,8 +26,6 @@ cache:
   - node_modules
   - '%LOCALAPPDATA%\electron\Cache'
   - '%LOCALAPPDATA%\electron-builder\cache'
-  - '%LOCALAPPDATA%\.meteor'
-  - '%LOCALAPPDATA%\Yarn'
 
 init:
   # enabling RDP for debugging purposes
