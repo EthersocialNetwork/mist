@@ -2,6 +2,7 @@ const _ = require('underscore');
 const builder = require('electron-builder');
 const del = require('del');
 const { exec, execSync } = require('child_process');
+const spawn = require('cross-spawn');
 const fs = require('fs');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
@@ -105,19 +106,26 @@ gulp.task('pack-wallet', cb => {
     }
 
     console.log('Use local wallet at meteor-dapp-wallet/app');
+    let opts = ['run', 'meteor-build-client'];
     const configPath = path.resolve(`dist_${type}/app/config.json`);
     const walletPath = path.resolve('wallet');
-    let opts = options.debug ? '--debug ' : '';
-    opts += options.verbose ? '--verbose' : '';
-    let cmd = exec(
-      `yarn run meteor-build-client ${walletPath} -s ${configPath} -p " " ${opts}`,
-      { cwd: 'meteor-dapp-wallet/app', maxBuffer: 700*1024 },
+    opts.push(walletPath);
+    opts.push('-s', configPath);
+    opts.push('-p', " ");
+    if (options.debug) opts.push('--debug');
+    if (options.verbose) opts.push('--verbose');
+
+    let cmd = spawn('yarn',
+      opts,
+      { cwd: 'meteor-dapp-wallet/app' },
       (err, stdout, stderr) => {
         console.log(stderr);
-        cb(err);
       }
     );
     cmd.stdout.pipe(process.stdout);
+    cmd.on('close', (code) => {
+      cb(code);
+    });
   });
 });
 
@@ -134,19 +142,28 @@ gulp.task('move-wallet', cb => {
 });
 
 gulp.task('build-interface', cb => {
+  console.log('Build build-interface');
+  let opts = ['run', 'meteor-build-client'];
   const interfaceBuildPath = path.resolve('build-interface');
   const configPath = path.resolve(`dist_${type}/app/config.json`);
-  let opts = options.debug ? '--debug ' : '';
-  opts += options.verbose ? '--verbose' : '';
-  let cmd = exec(
-    `yarn run meteor-build-client ${interfaceBuildPath} -s ${configPath} -p " " ${opts}`,
-    { cwd: 'interface', maxBuffer: 700*1024 },
-    (err, stdout, error) => {
-      console.log(error);
-      cb(err);
+  opts.push(interfaceBuildPath);
+  opts.push('-s', configPath);
+  opts.push('-p', " ");
+  if (options.debug) opts.push('--debug');
+  if (options.verbose) opts.push('--verbose');
+
+  let cmd = spawn('yarn',
+    opts,
+    { cwd: 'interface' },
+    (err, stdout, stderr) => {
+      console.log(stderr);
     }
   );
   cmd.stdout.pipe(process.stdout);
+  cmd.stderr.pipe(process.stderr);
+  cmd.on('close', (code) => {
+    cb(code);
+  });
 });
 
 gulp.task('copy-interface', () => {
