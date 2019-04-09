@@ -62,6 +62,9 @@ install:
   - 7z.exe x extra.7z
   - copy x64\7za.exe "C:\\Program Files\\7-zip\\7za.exe"
   - copy "C:\\Program Files\\7-zip\\7za.exe" C:\Users\appveyor\AppData\Local\.meteor\packages\meteor-tool\1.8.1\mt-os.windows.x86_64\dev_bundle\bin\7z.exe && exit 0
+  # fix console.js to show progress
+  - cat C:\Users\appveyor\AppData\Local\.meteor\packages\meteor-tool\1.8.1\mt-os.windows.x86_64\tools\console\console.js | sed "s@!this._stream.isTTY ||@@" > fix.js
+  - copy fix.js C:\Users\appveyor\AppData\Local\.meteor\packages\meteor-tool\1.8.1\mt-os.windows.x86_64\tools\console\console.js
 
   # installs JS dependencies
   - yarn install
