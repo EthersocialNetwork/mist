@@ -75,6 +75,7 @@ install:
 build_script:
   - ps: |
       $env:METEOR_PROFILE = 1000
+      $env:METEOR_PROGRESS_DEBUG = 1
       yarn build:$env:product --win --verbose --debug
   - ps: yarn dist:$env:product
 
