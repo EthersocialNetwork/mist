@@ -7,6 +7,8 @@ require('./include/openExternal.js');
 require('./include/setBasePath')('interface/wallet');
 const { webFrame } = require('electron');
 
+window.i18n = require('../i18n.js');
+
 // make variables globally accessable
 // window.dirname = __dirname;
 

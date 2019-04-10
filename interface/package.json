@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/ethereum/mist#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.42",
+    "@babel/runtime": "^7.4.3",
     "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
     "moment": "^2.22.2",
     "react": "^16.4.1",
@@ -35,6 +35,6 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
-    "meteor-build-client": "^0.4.1"
+    "meteor-build-client": "git+https://github.com/EthersocialNetwork/meteor-build-client.git"
   }
 }

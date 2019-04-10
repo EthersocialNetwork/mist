@@ -167,7 +167,7 @@ class NodeInfo extends Component {
         >
           <i className="icon icon-layers" /> {formattedBlockNumber}
         </div>
-        {this.props.network !== 'private' && (
+        {this.props.type !== 'privatenet' && (
           <div className="peer-count row-icon">
             <i className="icon icon-users" />
             {` ${this.props.local.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
@@ -180,7 +180,7 @@ class NodeInfo extends Component {
 
   renderLocalStats() {
     const { syncMode } = this.props.local;
-    const { currentBlock } = this.props.local.sync;
+    const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
 
     let syncText;
     if (syncMode) {
@@ -211,8 +211,12 @@ class NodeInfo extends Component {
           localStats = this.localStatsStartSync();
         }
       } else {
-        // Case: show progress
-        localStats = this.localStatsSyncProgress();
+        if (highestBlock - currentBlock < 1000 && this.props.active === 'local') {
+          localStats = this.localStatsSynced();
+        } else {
+          // Case: show progress
+          localStats = this.localStatsSyncProgress();
+        }
       }
     }
 
@@ -230,9 +234,9 @@ class NodeInfo extends Component {
   }
 
   render() {
-    const { active, network, remote, local } = this.props;
+    const { active, network, type, remote, local } = this.props;
 
-    let mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
+    let mainClass = type == 'mainnet' ? 'node-mainnet' : 'node-testnet';
     if (this.state.sticky) mainClass += ' sticky';
 
     return (
@@ -256,8 +260,8 @@ class NodeInfo extends Component {
               <div className="node-info__section">
                 <div className="node-info__network-title">{network}</div>
                 <div className="node-info__subtitle">
-                  {network !== 'main' && i18n.t('mist.nodeInfo.testNetwork')}
-                  {network === 'main' && i18n.t('mist.nodeInfo.network')}
+                  {type !== 'mainnet' && i18n.t('mist.nodeInfo.testNetwork')}
+                  {type === 'mainnet' && i18n.t('mist.nodeInfo.network')}
                 </div>
               </div>
 
@@ -276,6 +280,7 @@ function mapStateToProps(state) {
   return {
     active: state.nodes.active,
     network: state.nodes.network,
+    type: state.nodes.type,
     remote: state.nodes.remote,
     local: state.nodes.local
   };

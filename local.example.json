@@ -1,0 +1,116 @@
+{
+  "networks": {
+    "ethersocial": {
+      "title": "Ethersocial Network",
+      "noUsePrice": false,
+      "ticker": "ESN",
+      "unit": "ESN",
+      "ether": "esn",
+      "Ether": "ESN",
+      "ethereum": "ethersocial",
+      "Ethereum": "Ethersocial",
+      "walletName": "ESNWallet",
+      "walletDescription": "The ESN Wallet",
+      "walletKeywords": "wallet, dapp, ESN, ethersocial",
+      "downloadUrl": "https://github.com/EthersocialNetwork/mist/releases",
+      "blockExplorerUrl": "https://ethersocial.net",
+      "blockExplorerAddrUrl": "https://ethersocial.net/addr/",
+      "geth": "geth",
+      "gethIpc": "geth.ipc",
+      "supportedUnits": [
+        { "text": "USD", "value": "usd" },
+        { "text": "BTC", "value": "btc" },
+        { "text": "BRL", "value": "brl" },
+        { "text": "CNY", "value": "cny" },
+        { "text": "EUR", "value": "eur" },
+        { "text": "GBP", "value": "gbp" },
+        { "text": "JPY", "value": "jpy" },
+        { "text": "KRW", "value": "krw" }
+      ],
+      "supportedCurrencies": ["USD", "BTC", "BRL", "CNY", "EUR", "GBP", "JPY", "KRW"],
+      "tokens": [
+        {
+          "network": "main",
+          "name": "ethersocial",
+          "local": "dapp_hasDdangleToken",
+          "token": {
+            "address": "0x72ea3508d9d817a91465abb59be10fef9857a055",
+            "name": "DdengleToken",
+            "balances": {},
+            "decimals": 0
+          }
+        }
+      ]
+    }
+  },
+  "knownNetworks": {
+    "ethersocial": {
+      "type": "mainnet",
+      "hash": "0x310dd3c4ae84dd89f1b46cfdd5e26c8f904dfddddc73f323b468127272e20e9f"
+    },
+    "skynet": {
+      "type": "testnet",
+      "hash": "0xabcca8259adf43270310766fd545b8f58d65d6c5001f2f646e0fbc229aced20e"
+    }
+  },
+
+  "gethConnectionUrl": "ws://localhost:9546",
+  "defaultNodeType": "geth",
+  "defaultNodeTypeId": "Geth",
+  "defaultSyncMode": "fast",
+  "defaultNetwork": "ethersocial",
+  "compatNodeType": "gesn",
+  "networkName": "ethersocial",
+  "name": "Ethersocial",
+  "port": "50505",
+  "endpoints": {
+    "Main": "https://api.esn.gonspool.com",
+    "Ropsten": "https://api.skynet.gonspool.com",
+    "Rinkeby": "https://api.skynet.gonspool.com",
+    "Kovan": "https://api.skynet.gonspool.com"
+  },
+  "title": "ESN Wallet",
+  "ticker": "ESN",
+  "supportedCurrencies": ["USD", "BTC", "BRL", "CNY", "EUR", "GBP", "JPY", "KRW"],
+  "ethereum": "esn",
+  "Ethereum": "Ethersocial",
+  "ether": "esn",
+  "Ether": "ESN",
+  "unit": "ESN",
+  "walletName": "ESNWallet",
+  "imgSrcDir": "./ethersocial/",
+  "icons": { "wallet": "./icon-gray.png" , "mist": "./icons/mist/icon.png" },
+  "homepage": "https://github.com/EthersocialNetwork/mist",
+  "copyright": "Copyright 2017-2019 Ethereum Foundation, 2018-2019 Ethersocial Network",
+  "appPrefix": "org.ethersocial",
+  "githubApiUrl": "https://api.github.com/repos/EthersocialNetwork/mist/releases",
+  "githubApiUrlLatest": "https://api.github.com/repos/EthersocialNetwork/mist/releases/latest",
+  "githubUploadUrl": "https://uploads.github.com/repos/EthersocialNetwork/mist/releases",
+  "homeUrl": "https://ethersocial.org",
+  "homeRedirect": "https://ethersocial.org",
+  "walletHomeUrl": "https://ethersocial.org",
+  "walletHomeRedirect": "https://wallet.ethereum.org",
+  "clientBinariesJson": "https://raw.githubusercontent.com/EthersocialNetwork/mist/master/clientBinaries.json",
+  "downloadUrl": "https://github.com/EthersocialNetwork/mist/releases",
+  "wikiUrl": "https://github.com/EthersocialNetwork/mist/wiki",
+  "issueUrl": "https://github.com/EthersocialNetwork/mist/issues",
+  "redditUrl": "https://www.reddit.com/r/ethersocial",
+  "discordUrl": "https://discord.gg/rVzc4aV",
+  "twitterUrl": "https://twitter.com/ESNfoundation",
+  "allowedDownloadUrlsRegexString": "^https:\\/\\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)?ethereum\\.org\\/|[A-Za-z0-9_-]+\\.blob\\.core\\.windows\\.net\\/|github\\.com\\/[A-Za-z0-9_-]+\\/(?:[a-zA-Z_-]+)\\/releases\\/download\\/|bintray\\.com\\/artifact\\/download\\/karalabe\\/ethereum\\/)(?:.+)",
+  "keystorePath" : {
+    "darwin": "/Library/Ethersocial/keystore",
+    "unix": "/.ethersocial/keystore",
+    "win32": "\\Ethersocial\\keystore"
+  },
+  "ipcPath": {
+    "darwin": "/Library/Ethersocial/geth.ipc",
+    "unix": "/.ethersocial/geth.ipc",
+    "win32": "\\\\.\\pipe\\geth.ipc"
+  },
+  "userPath": {
+    "darwin": "/Library/Ethersocial/keystore",
+    "unix": "/.ethersocial/keystore",
+    "win32": "\\Ethersocial\\keystore"
+  }
+}

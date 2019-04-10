@@ -396,6 +396,25 @@ class Windows {
             webPreferences: mainWebPreferences[global.mode]
           }
         };
+      case 'splash':
+        return {
+          primary: true,
+          url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
+          show: true,
+          electronOptions: {
+            alwaysOnTop: true,
+            width: 400,
+            height: 230,
+            resizable: false,
+            backgroundColor: '#F6F6F6',
+            useContentSize: true,
+            frame: false,
+            titleBarStyle: 'default',
+            webPreferences: {
+              preload: `${__dirname}/preloader/splashScreen.js`,
+            },
+          },
+        };
       case 'loading':
         return {
           show: false,
@@ -421,7 +440,7 @@ class Windows {
           url: `${global.interfacePopupsUrl}#about`,
           electronOptions: {
             width: 420,
-            height: 230,
+            height: 290,
             alwaysOnTop: true
           }
         };
@@ -441,7 +460,7 @@ class Windows {
         return {
           electronOptions: {
             width: 600,
-            height: 370,
+            height: 440,
             alwaysOnTop: true
           }
         };
@@ -463,7 +482,7 @@ class Windows {
             alwaysOnTop: true
           }
         };
-      case 'sendTx':
+      case 'sendTransactionConfirmation':
         return {
           electronOptions: {
             width: 580,
@@ -578,7 +597,6 @@ class Windows {
       'updateAvailable',
       'clientUpdateAvailable',
       'connectAccount',
-      'sendTx',
       'txHistory'
     ];
     if (

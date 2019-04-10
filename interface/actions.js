@@ -103,7 +103,10 @@ export function getPriceConversion() {
   return dispatch => {
     dispatch({ type: '[CLIENT]:GET_PRICE_CONVERSION:START' });
 
-    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${
+    let ticker = publicSettings.ticker || 'ETH';
+    let currencies = publicSettings.supportedCurrencies || ['USD', 'EUR', 'GBP', 'BRL'];
+    let query = currencies.join(',');
+    const url = `https://min-api.cryptocompare.com/data/price?fsym=${ticker}&tsyms=${query}&extraParams=Mist-${
       mist.version
     }`;
 

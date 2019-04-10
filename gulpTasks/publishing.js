@@ -12,6 +12,13 @@ const version = require('../package.json').version;
 const checksums = [];
 const type = options.type;
 
+var settings = {};
+try {
+  _.extend(settings, require('../local.json'));
+} catch (error) {
+  _.extend(settings, require('../default.json'));
+}
+
 gulp.task('checksums', cb => {
   const releasePath = `./dist_${type}/release`;
   const files = fs.readdirSync(releasePath);
@@ -45,17 +52,23 @@ gulp.task('checksums', cb => {
 gulp.task('upload-binaries', cb => {
   // personal access token (public_repo) must be set using travis' ENVs
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+  const REPO_TAG = process.env.TRAVIS_TAG || process.env.APPVEYOR_REPO_TAG_NAME;
 
   console.info('Checking Github releases...');
   // query github releases
   got(
-    `https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`,
+    `${settings.githubApiUrl}?access_token=${GITHUB_TOKEN}`,
     { json: true }
   )
     // filter draft with current version's tag
     .then(res => {
-      const draft =
+      let draft =
         res.body[_.indexOf(_.pluck(res.body, 'tag_name'), `v${version}`)];
+
+      // check REPO_TAG
+      if (draft === undefined && REPO_TAG) {
+        draft = res.body[_.indexOf(_.pluck(res.body, 'tag_name'), REPO_TAG)];
+      }
 
       if (draft === undefined)
         throw new Error(
@@ -89,9 +102,7 @@ gulp.task('upload-binaries', cb => {
 
         return (
           githubUpload({
-            url: `https://uploads.github.com/repos/ethereum/mist/releases/${
-              draft.id
-            }/assets{?name}`,
+            url: `${settings.githubUploadUrl}/${draft.id}/assets{?name}`,
             token: [GITHUB_TOKEN],
             assets: filePaths
           })
@@ -114,7 +125,7 @@ gulp.task('upload-binaries', cb => {
                   })
                   .join('\n');
                 got.patch(
-                  `https://api.github.com/repos/ethereum/mist/releases/${
+                  `${settings.githubApiUrl}/${
                     draft.id
                   }?access_token=${GITHUB_TOKEN}`,
                   {

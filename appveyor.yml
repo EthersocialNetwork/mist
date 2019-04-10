@@ -7,13 +7,14 @@ environment:
   # increasing `meteor build` memory allocation
   # https://github.com/meteor/meteor/issues/9568
   TOOL_NODE_FLAGS: "--max-old-space-size=4096"
+  TIMEOUT_SCALE_FACTOR: 8
 
   APPVEYOR_RDP_PASSWORD:
     secure: ErXQkfrN/bX6LtqcjtnLGw==
   
   matrix:
-    - product: mist
     - product: wallet
+    - product: mist
 
 artifacts:
   - path: dist_mist\release\*
@@ -38,20 +39,44 @@ install:
   - git submodule update --init --recursive 
 
   # installs global dependencies
-  - choco install meteor 
+  - choco install meteor --params="'/RELEASE:1.8.1'"
   - choco install nsis
+  - choco install 7zip
 
   - refreshenv
   - ps: refreshenv
  
   - node --version
 
+  # prepare meteor-dapp-wallet
+  - cp local.example.json local.json
+  - cd meteor-dapp-wallet/app && mkdir packages && cd packages
+  - git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
+  - cd .. && yarn install
+  - cd ..\..\..
+  - cd
+
+  - meteor --version
+  # download 7za
+  - curl -L http://www.7-zip.org/a/7z1900-extra.7z -o extra.7z
+  - 7z.exe x extra.7z
+  - copy x64\7za.exe "C:\\Program Files\\7-zip\\7za.exe"
+  - copy "C:\\Program Files\\7-zip\\7za.exe" C:\Users\appveyor\AppData\Local\.meteor\packages\meteor-tool\1.8.1\mt-os.windows.x86_64\dev_bundle\bin\7z.exe && exit 0
+  # fix console.js to show progress
+  - cat C:\Users\appveyor\AppData\Local\.meteor\packages\meteor-tool\1.8.1\mt-os.windows.x86_64\tools\console\console.js | sed "s@!this._stream.isTTY ||@@" > fix.js
+  - copy fix.js C:\Users\appveyor\AppData\Local\.meteor\packages\meteor-tool\1.8.1\mt-os.windows.x86_64\tools\console\console.js
+
   # installs JS dependencies
   - yarn install
-  - cd interface && yarn install
+  - cd interface && mkdir packages && cd packages && git clone https://github.com/EthersocialNetwork/meteor-package-tools && git clone https://github.com/EthersocialNetwork/meteor-package-elements
+  - cd .. && yarn install
+  - cd ..\..
+  - cd
 
 build_script:
-  - ps: yarn build:$env:product --win --skipTasks=build-interface
+  - ps: |
+      $env:METEOR_PROGRESS_DEBUG = 1
+      yarn build:$env:product --win --verbose --debug
   - ps: yarn dist:$env:product
 
 test_script:

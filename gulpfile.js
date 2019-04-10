@@ -23,9 +23,11 @@ if (process.platform === 'darwin') {
 const args = process.argv.slice(2);
 const options = minimist(args, {
   string: ['walletSource', 'test', 'skipTasks'],
-  boolean: _.flatten(['wallet', platforms]),
+  boolean: _.flatten(['wallet', 'debug', 'verbose', platforms]),
   default: {
     wallet: false,
+    debug: false,
+    verbose: false,
     walletSource: 'master',
     test: 'basic',
     skipTasks: ''
@@ -71,14 +73,16 @@ gulp.task('upload-queue', gulp.series('checksums', 'upload-binaries'));
 const skipTasks = options.skipTasks.replace(/\s/g, '').split(',');
 const tasks = [
   'clean-dist',
+  'switch-production',
   'pack-wallet',
   'copy-app-source-files',
   'transpile-main',
   'transpile-modules',
   'copy-build-folder-files',
-  'switch-production',
+  'tap-i18n',
   'build-interface',
   'copy-interface',
+  'custom-interface',
   'move-wallet',
   'copy-i18n',
   'build-dist',

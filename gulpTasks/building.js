@@ -2,6 +2,7 @@ const _ = require('underscore');
 const builder = require('electron-builder');
 const del = require('del');
 const { exec, execSync } = require('child_process');
+const spawn = require('cross-spawn');
 const fs = require('fs');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
@@ -11,8 +12,17 @@ const Q = require('bluebird');
 const shell = require('shelljs');
 const version = require('../package.json').version;
 
+var settings = {};
+try {
+  _.extend(settings, require('../local.json'));
+} catch (error) {
+  _.extend(settings, require('../default.json'));
+}
+
 const type = options.type;
-const applicationName = options.wallet ? 'Ethereum Wallet' : 'Mist';
+const applicationName = options.wallet ? settings.walletName : 'Mist';
+
+settings.appId = `${settings.appPrefix}.${type}`;
 
 gulp.task('clean-dist', cb => {
   return del([`./dist_${type}`], cb);
@@ -56,35 +66,66 @@ gulp.task('transpile-modules', () => {
 });
 
 gulp.task('copy-build-folder-files', () => {
+  let imgSrcDir = './';
+  if (settings.imgSrcDir) {
+    imgSrcDir = settings.imgSrcDir;
+  }
+
+  // copy all custom icons
+  gulp.src([`${imgSrcDir}icons/${type}/icon*`])
+    .pipe(gulp.dest(`./dist_${type}/app/icons/${type}`));
+
   return gulp
-    .src([`./icons/${type}/*`, './interface/public/images/dmg-background.jpg'])
+    .src([`${imgSrcDir}icons/${type}/*`, `${imgSrcDir}interface/public/images/dmg-background.jpg`])
     .pipe(gulp.dest(`./dist_${type}/build`));
 });
 
 gulp.task('switch-production', cb => {
+  var config = {
+    production: true,
+    mode: type
+  };
+  const appPath = path.join(__dirname, `../dist_${type}`, 'app');
+  shell.mkdir('-p', appPath);
+  config.public = settings;
   fs.writeFile(
     `./dist_${type}/app/config.json`,
-    JSON.stringify({
-      production: true,
-      mode: type
-    }),
+    JSON.stringify(config),
     cb
   );
 });
 
 gulp.task('pack-wallet', cb => {
   del(['./wallet']).then(() => {
-    const fromPath = path.resolve('meteor-dapp-wallet', 'build');
-    const toPath = path.resolve('wallet');
+    const srcPath = path.resolve('meteor-dapp-wallet');
 
-    if (!fs.existsSync(fromPath)) {
+    if (!fs.existsSync(srcPath)) {
       throw new Error(
-        `${fromPath} could not be found. Did you run "git submodule update --recursive?"`
+        `${srcPath} could not be found. Did you run "git submodule update --recursive?"`
       );
     }
 
-    shell.cp('-R', fromPath, toPath);
-    cb();
+    console.log('Use local wallet at meteor-dapp-wallet/app');
+    let opts = ['run', 'meteor-build-client'];
+    const configPath = path.resolve(`dist_${type}/app/config.json`);
+    const walletPath = path.resolve('wallet');
+    opts.push(walletPath);
+    opts.push('-s', configPath);
+    opts.push('-p', " ");
+    if (options.debug) opts.push('--debug');
+    if (options.verbose) opts.push('--verbose');
+
+    let cmd = spawn('yarn',
+      opts,
+      { cwd: 'meteor-dapp-wallet/app' },
+      (err, stdout, stderr) => {
+        console.log(stderr);
+      }
+    );
+    cmd.stdout.pipe(process.stdout);
+    cmd.on('close', (code) => {
+      cb(code);
+    });
   });
 });
 
@@ -101,21 +142,46 @@ gulp.task('move-wallet', cb => {
 });
 
 gulp.task('build-interface', cb => {
+  console.log('Build build-interface');
+  let opts = ['run', 'meteor-build-client'];
   const interfaceBuildPath = path.resolve('build-interface');
-  exec(
-    `yarn run meteor-build-client ${interfaceBuildPath} -p ""`,
+  const configPath = path.resolve(`dist_${type}/app/config.json`);
+  opts.push(interfaceBuildPath);
+  opts.push('-s', configPath);
+  opts.push('-p', " ");
+  if (options.debug) opts.push('--debug');
+  if (options.verbose) opts.push('--verbose');
+
+  let cmd = spawn('yarn',
+    opts,
     { cwd: 'interface' },
-    (err, stdout) => {
-      console.log(stdout);
-      cb(err);
+    (err, stdout, stderr) => {
+      console.log(stderr);
     }
   );
+  cmd.stdout.pipe(process.stdout);
+  cmd.stderr.pipe(process.stderr);
+  cmd.on('close', (code) => {
+    cb(code);
+  });
 });
 
 gulp.task('copy-interface', () => {
   return gulp
     .src(['build-interface/**/*'])
-    .pipe(gulp.dest(`dist_${type}/app/interface`));
+    .pipe(gulp.dest(`dist_${type}/app/interface`, { mode: 0644 }));
+});
+
+gulp.task('custom-interface', () => {
+  let imgSrcDir = './';
+  if (settings.imgSrcDir) {
+    imgSrcDir = settings.imgSrcDir;
+
+    // copy all custom image files
+    return gulp
+      .src([`${imgSrcDir}interface/public/images/*`])
+      .pipe(gulp.dest(`dist_${type}/app/interface/images`));
+  }
 });
 
 gulp.task('copy-i18n', () => {
@@ -126,6 +192,35 @@ gulp.task('copy-i18n', () => {
     .pipe(gulp.dest(`./dist_${type}/app`));
 });
 
+// generate tab-i18n.json
+gulp.task('tap-i18n', cb => {
+  const i18nPath = path.join('interface', 'public', 'i18n');
+  shell.mkdir('-p', i18nPath);
+
+  let i18nConf = fs.readFileSync('./interface/project-tap.i18n');
+  i18nConf = JSON.parse(i18nConf);
+
+  const resources = {};
+  i18nConf.supported_languages.forEach(lang => {
+    let uiTranslations = {};
+    try {
+      if (fs.existsSync(`./interface/i18n/app.${lang}.i18n.json`)) {
+        uiTranslations = require(`../interface/i18n/app.${lang}.i18n.json`);
+      }
+    } catch (e) {
+      // ignore
+    }
+    let mistTranslations = require(`../interface/i18n/mist.${lang}.i18n.json`);
+    resources[lang] = { project: _.extend(uiTranslations, mistTranslations) };
+
+    let out = JSON.stringify(resources[lang]);
+    fs.writeFileSync(path.join(i18nPath, `${lang}.json`), out);
+  });
+
+  let out = JSON.stringify(resources);
+  fs.writeFile(path.join(i18nPath, 'tap-i18n.json'), out, cb);
+});
+
 gulp.task('build-dist', cb => {
   const appPackageJson = _.extend({}, require('../package.json'), {
     // eslint-disable-line global-require
@@ -133,9 +228,9 @@ gulp.task('build-dist', cb => {
     productName: applicationName,
     description: applicationName,
     license: 'GPL-3.0',
-    homepage: 'https://github.com/ethereum/mist',
+    homepage: settings.homepage,
     build: {
-      appId: `org.ethereum.${type}`,
+      appId: settings.appId,
       asar: true,
       directories: {
         buildResources: '../build',
@@ -281,12 +376,19 @@ gulp.task('build-nsis', done => {
 
   const typeString = `-DTYPE=${type}`;
   const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
+  const networkString = `-DNETWORK=${settings.name}`;
+  const portString = `-DPORT=${settings.port}`;
+  const gethIdString = `-DGETHID=${settings.defaultNodeTypeId}`;
+  const gethString = `-DGETH=${settings.defaultNodeType}`;
+  const issueUrlString = `-DISSUEURL=${settings.issueUrl}`;
+  const downloadUrlString = `-DDOWNLOADURL=${settings.downloadUrl}`;
+  const homeUrlString = `-DHOMEURL=${settings.walletHomeUrl}`;
   const versionParts = version.split('.');
   const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${
     versionParts[1]
   } -DVERSIONBUILD=${versionParts[2]}`;
 
-  const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
+  const cmdString = `makensis ${versionString} ${typeString} ${appNameString} ${networkString} ${portString} ${gethIdString} ${gethString} ${issueUrlString} ${downloadUrlString} ${homeUrlString} scripts/windows-installer.nsi`;
 
   exec(cmdString, done);
 });

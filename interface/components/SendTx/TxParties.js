@@ -5,9 +5,12 @@ class TxParties extends Component {
   totalAmount = () => {
     var amount = EthTools.formatBalance(
       web3.utils.toBN(this.props.value || 0),
-      '0,0.00[0000000000000000]',
+      '0,0.00[0000000000000000] UNIT',
       'ether'
     );
+    var unitPos = amount.indexOf(' ');
+    var unit = amount.substr(unitPos + 1);
+    amount = amount.substr(0, unitPos);
 
     var dotPos = ~amount.indexOf('.')
       ? amount.indexOf('.') + 3
@@ -18,6 +21,7 @@ class TxParties extends Component {
         <span>
           {amount.substr(0, dotPos)}{' '}
           <small style={{ fontSize: '0.5em' }}>{amount.substr(dotPos)}</small>
+          {' '}<span className="unit">{unit}</span>
         </span>
       );
     }
@@ -107,7 +111,7 @@ class TxParties extends Component {
     return (
       <div className="connection">
         <div className="amount">
-          {this.totalAmount()} <span className="unit">ETHER</span>
+          {this.totalAmount()}
           {executionFunction && (
             <div
               className={`function-signature ${

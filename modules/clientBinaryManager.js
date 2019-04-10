@@ -47,16 +47,18 @@ class Manager extends EventEmitter {
   }
 
   _checkForNewConfig(restart) {
-    const nodeType = 'Geth';
+    const nodeType = Settings.public.defaultNodeTypeId || 'Geth';
     let binariesDownloaded = false;
     let nodeInfo;
 
-    log.info(`Checking for new client binaries config from: ${BINARY_URL}`);
+    let binaryUrl = Settings.public.clientBinariesJson || BINARY_URL;
+
+    log.info(`Checking for new client binaries config from: ${binaryUrl}`);
 
     this._emit('loadConfig', 'Fetching remote client config');
 
     // fetch config
-    return got(BINARY_URL, {
+    return got(binaryUrl, {
       timeout: 3000,
       json: true
     })
@@ -212,7 +214,7 @@ class Manager extends EventEmitter {
         return mgr
           .init({
             folders: [
-              path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
+              path.join(Settings.userDataPath, 'binaries', Settings.public.defaultNodeTypeId, 'unpacked'),
               path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked')
             ]
           })
@@ -235,9 +237,13 @@ class Manager extends EventEmitter {
               return Q.map(_.values(clients), c => {
                 binariesDownloaded = true;
 
+                let urlRegex = null;
+                if (Settings.public.allowedDownloadUrlsRegexString) {
+                  urlRegex = new RegExp(Settings.public.allowedDownloadUrlsRegexString);
+                }
                 return mgr.download(c.id, {
                   downloadFolder: path.join(Settings.userDataPath, 'binaries'),
-                  urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX
+                  urlRegex: urlRegex || ALLOWED_DOWNLOAD_URLS_REGEX
                 });
               });
             }
@@ -247,11 +253,15 @@ class Manager extends EventEmitter {
 
             _.each(mgr.clients, client => {
               if (client.state.available) {
-                const idlcase = client.id.toLowerCase();
+                let idlcase = client.id.toLowerCase();
+                let idPath = `${idlcase}Path`;
+                if (idlcase == Settings.public.defaultNodeType) {
+                  idPath = 'gethPath';
+                }
 
                 this._availableClients[idlcase] = {
                   binPath:
-                    Settings[`${idlcase}Path`] || client.activeCli.fullPath,
+                    Settings[idPath] || client.activeCli.fullPath,
                   version: client.version
                 };
               }

@@ -1,6 +1,7 @@
 global._ = require('./modules/utils/underscore');
 
 const { app, dialog, ipcMain, shell, protocol } = require('electron');
+const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 const timesync = require('os-timesync');
 
@@ -26,6 +27,10 @@ import { SwarmState } from './modules/core/settings/reducer';
 import swarmNode from './modules/swarmNode.js';
 import ethereumNodeRemote from './modules/ethereumNodeRemote';
 
+Q.config({
+  cancellation: true
+});
+
 global.store = configureReduxStore();
 
 Settings.init();
@@ -40,6 +45,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const nodeSync = require('./modules/nodeSync.js');
 
 // Define global vars; The preloader makes some globals available to the client.
 global.webviews = [];
@@ -121,6 +127,7 @@ app.on('before-quit', async event => {
 });
 
 let mainWindow;
+let splashWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -130,7 +137,7 @@ app.on('ready', async () => {
     dialog.showErrorBox(
       'Insecure RPC connection',
       `
-WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
+WARNING: You are connecting to an ${Settings.public.name} node via: ${Settings.rpcHttpPath}
 
 This is less secure than using local IPC - your passwords will be sent over the wire in plaintext.
 
@@ -156,7 +163,7 @@ store.dispatch({
   payload: { protocol: 'bzz' }
 });
 
-function onReady() {
+async function onReady() {
   global.config = db.getCollection('SYS_config');
 
   dbSync.initializeListeners();
@@ -171,10 +178,6 @@ function onReady() {
 
   ipcProviderBackend.init();
 
-  ethereumNode.init();
-
-  ethereumNodeRemote.start();
-
   // TODO: Settings.language relies on global.config object being set
   store.dispatch(setLanguageOnMain(Settings.language));
 
@@ -184,11 +187,19 @@ function onReady() {
 
   checkTimeSync();
 
+  splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
+}
+
+async function kickStart() {
   initializeListeners();
 
   checkForLegacyChain();
 
-  ClientBinaryManager.init();
+  await ClientBinaryManager.init();
+
+  ethereumNode.init();
+
+  ethereumNodeRemote.start();
 
   if (Settings.enableSwarmOnStart) {
     store.dispatch(toggleSwarm());
@@ -197,7 +208,15 @@ function onReady() {
   // Update menu (to show node switching possibilities)
   appMenu();
 
-  startMainWindow();
+  if (splashWindow) {
+    splashWindow.show();
+  }
+
+  if (!Settings.inAutoTestMode) {
+    await handleNodeSync();
+  }
+
+  await startMainWindow();
 }
 
 function enableSwarmProtocol() {
@@ -265,6 +284,10 @@ function createCoreWindows() {
 
   // Delegating events to save window bounds on windowStateKeeper
   global.defaultWindow.manage(mainWindow.window);
+
+  if (!Settings.inAutoTestMode) {
+    splashWindow = Windows.create('splash');
+  }
 }
 
 function checkTimeSync() {
@@ -302,7 +325,7 @@ function checkForLegacyChain() {
         detail: global.i18n.t('mist.errors.legacyChain.description')
       },
       () => {
-        shell.openExternal('https://github.com/ethereum/mist/releases');
+        shell.openExternal(Settings.public.downloadUrl);
         store.dispatch(quitApp());
       }
     );
@@ -333,6 +356,31 @@ function initializeListeners() {
   });
 }
 
+function handleNodeSync() {
+    return new Q((resolve, reject) => {
+        nodeSync.on('nodeSyncing', (result) => {
+            Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+        });
+
+        nodeSync.on('stopped', () => {
+            Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+        });
+
+        nodeSync.on('error', (err) => {
+            log.error('Error syncing node', err);
+
+            reject(err);
+        });
+
+        nodeSync.on('finished', () => {
+            nodeSync.removeAllListeners('error');
+            nodeSync.removeAllListeners('finished');
+
+            resolve();
+        });
+    });
+}
+
 function startMainWindow() {
   log.info(`Loading Interface at ${global.interfaceAppUrl}`);
   initializeMainWindowListeners();
@@ -341,30 +389,11 @@ function startMainWindow() {
 
 function initializeMainWindowListeners() {
   mainWindow.on('ready', () => {
+    if (splashWindow) { splashWindow.close(); }
     mainWindow.show();
   });
 
-  // If in wallet mode, first show loading window
-  // then load wallet url once node connection is established.
-  // Otherwise, load immediately since we already
-  // have this logic in Mist in webviews.html
-  if (global.mode !== 'wallet') {
-    mainWindow.load(global.interfaceAppUrl);
-  } else {
-    mainWindow.load(
-      'data:text/html,<div class="loadingspinner"></div><style>body{background: #f1f1f1;height:100vh;margin: 0;padding: 0;display: flex;justify-content: center;align-items: center;}.loadingspinner{pointer-events: none;width: 3em;height: 3em;border: 0.4em solid transparent;border-color: #eee;border-top-color: #3E67EC;border-radius: 50%;animation: loadingspin 1s linear infinite;}@keyframes loadingspin{100% {transform: rotate(360deg)}</style>'
-    );
-    const unsubscribe = store.subscribe(() => {
-      if (
-        store.getState().nodes.remote.blockNumber > 100 ||
-        store.getState().nodes.local.blockNumber > 0
-      ) {
-        // Connected to node!
-        mainWindow.load(global.interfaceAppUrl);
-        unsubscribe();
-      }
-    });
-  }
+  mainWindow.load(global.interfaceAppUrl);
 
   mainWindow.on('closed', () => store.dispatch(quitApp()));
 }

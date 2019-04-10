@@ -25,7 +25,7 @@ const check = (exports.check = () => {
       break;
   }
 
-  return got('https://api.github.com/repos/ethereum/mist/releases/latest', {
+  return got(Settings.public.githubApiUrlLatest, {
     timeout: 30000,
     json: true
   })

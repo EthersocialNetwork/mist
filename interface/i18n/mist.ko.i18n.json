@@ -13,7 +13,7 @@
         "quit": "__app__ 종료"
       },
       "edit": {
-        "label": "수정",
+        "label": "편집",
         "undo": "되돌리기",
         "redo": "재적용",
         "cut": "오려두기",
@@ -23,15 +23,17 @@
       },
       "view": {
         "label": "보기",
-        "fullscreen": "전체화면으로",
+        "languages": "언어",
+        "fullscreen": "전체화면",
+        "txHistory": "트랜젝션 기록",
         "default": "기본"
       },
       "file": {
         "label": "계정",
-        "importPresale": "계정 추가하기",
+        "importPresale": "계정 불러오기",
         "newAccount": "새 계정",
         "backup": "백업",
-        "backupKeyStore": "계정키 백업",
+        "backupKeyStore": "키스토어 백업",
         "backupMist": "어플리케이션 데이터",
         "swarmUpload": "Swarm에 업로드"
       },
@@ -43,11 +45,13 @@
         "devToolsWebview": "__webview__",
         "runTests": "테스트 실행",
         "logFiles": "로그파일 보기",
-        "ethereumNode": "이더리움 노드",
+        "ethereumNode": "노드",
         "network": "네트워크",
         "mainNetwork": "메인 네트워크",
         "startMining": "⛏ 채굴 시작(테스트넷만 해당)",
         "stopMining": "⛏ 채굴 중단",
+        "enableSwarm": "Swarm 활성화",
+        "syncMode": "Sync 모드",
         "openRemix": "Remix IDE 열기"
       },
       "window": {
@@ -58,7 +62,12 @@
       },
       "help": {
         "label": "도움말",
-        "reportBug": "깃허브에 이슈 보고"
+        "reportBug": "깃허브에 이슈 보고",
+        "mistWiki": "문제 해결 및 도움말",
+        "gitter": "Gitter에 있는 Mist채널",
+        "twitter": "트위터",
+        "discord": "디스코드",
+        "reddit": "레딧"
       }
     },
     "errors": {
@@ -80,7 +89,7 @@
       "nodeChecksumMismatch": {
         "title": "다운로드 한 노드에서 체크섬 불일치!",
         "description":
-          "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+          "__algorithm__: __hash__\n\n__type__ 형식의 노드 버전 __version__을 수동으로 설치해주세요."
       },
       "legacyChain": {
         "title": "레거시 체인 감지",
@@ -94,14 +103,38 @@
       "inspectElements": "요소 검사"
     },
     "sendTx": {
+      "tokens": "토큰",
+      "transfer": "전송",
+      "showDetails": "자세히 보기",
+      "hideDetails": "감추기",
+      "tokenName": "토큰 이름:",
+      "tokenContractName": "토큰 컨트랙트:",
+      "parameters": "파라미터",
+      "etherAmount": "이더 수량:",
+      "gasPriceStandard": "가스 가격 (표준):",
+      "gasPricePriority": "가스 가격 (우대):",
+      "gasEstimate": "가스 추정:",
+      "errorMessage": "오류 메시지:",
+      "transactionExecutingFunction": "트랜젝션 실행 함수:",
+      "from": "송신",
+      "to": "수신",
+      "contract": "컨트랙트",
+      "loading": "로딩중...",
+      "priorityFee": "우대 요금:",
+      "standardFee": "기본 요금:",
+      "execute": "실행",
       "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
       "unlocking": "확인 중...",
       "estimatedGasError":
-        "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
+        "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 가스는 모두 소진될 수 있습니다.",
       "overBlockGasLimit":
         "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
       "notEnoughGas":
         "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요",
+      "gasLoadingWarning":
+        "시간이 걸릴 수 있습니다! 기본 요금 사용을 선택할 수 있습니다. 실제 수수료는 이보더 더 적을것입니다.",
+      "gasLoadingError":
+        "가스 추정에 실패했습니다. 기본 요금 사용을 선택할 수 있습니다. 실제 수수료는 이보더 더 적을것입니다.",
       "errors": {
         "connectionTimeout":
           "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
@@ -113,18 +146,40 @@
         "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
       }
     },
+    "txHistory": {
+      "windowTitle": "트랜젝션 기록",
+      "total": "전체 __count__ 회",
+      "status": "상태",
+      "statusPending": "보류",
+      "statusFailed": "실패",
+      "statusConfirmed": "확인됨",
+      "confirmations": "__count__ 블록 컨펌",
+      "txHash": "트랜젝션 해시",
+      "etherAmount": "이더 수량",
+      "nonce": "Nonce",
+      "gasLimit": "가스 리밋",
+      "gasUsed": "사용 가스",
+      "gasPrice": "가스 가격",
+      "txCost": "실제 트랜젝션 비용",
+      "gasPrice": "가스 리밋",
+      "data": "데이터",
+      "newContract": "새 컨트랙트",
+      "from": "송신",
+      "to": "수신",
+      "contract": "컨트랙트"
+    },
     "nodeInfo": {
-      "active": "active",
+      "active": "활성",
       "blockNumber": "마지막 블록 번호",
-      "blocksBehind": "blocks behind",
+      "blocksBehind": "블록 이전",
       "checkingWhichNetwork": "네트워크 확인중...",
-      "connecting": "Connecting...",
-      "local": "Local",
-      "lookingForPeers": "Looking for peers...",
-      "network": "Network",
-      "node": "Node",
+      "connecting": "연결중...",
+      "local": "로컬",
+      "lookingForPeers": "피어 검색중...",
+      "network": "네트워크",
+      "node": "노드",
       "nodeSyncing": "__blockDiff__ 블록 남음",
-      "peers": "피어들(peers)",
+      "peers": "피어",
       "privateNetwork": "프라이빗 네트워크",
       "test": "test",
       "testnetExplain":
@@ -143,32 +198,33 @@
       }
     },
     "startScreen": {
-      "runningNodeFound": "작동 중인 이더리움 노드를 발견!",
+      "runningNodeFound": "작동 중인 노드 발견!",
       "nodeConnectionTimeout":
-        "이더리움 노드를 시작할 수 없습니다! <br><small>만일<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a> 를 인스톨 했다면, 다음의 명령어를 사용해 실행하세요: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 또는 이슈를 리포트하세요 </a></small>",
+        "노드를 시작할 수 없습니다! <br><small>만일<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a> 를 인스톨 했다면, 다음의 명령어를 사용해 실행하세요: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 또는 이슈를 리포트하세요 </a></small>",
       "nodeBinaryNotFound":
-        "이더리움 노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
-      "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
+        "노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
+      "nodeSyncing": "노드에 동기화가 필요합니다, 기다려 주세요...",
       "nodeSyncInfo": "현재 __highestBlock__ 중 __displayBlock__ 을 다운로드중",
-      "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
-      "nodeStarting": "이더리움 노드를 시작중...",
-      "nodeStarted": "이더리움 노드가 시작됨",
-      "nodeConnected": "이더리움 노드가 연결됨",
-      "nodeStopping": "이더리움 노드가 정지중...",
-      "nodeStopped": "이더리움 노드가 정지됨",
-      "nodeError": "이더리움 노드 연결 에러 :'(",
+      "nodeSyncConnecting": "피어 탐색 중...",
+      "nodeStarting": "노드 시작중...",
+      "nodeStarted": "노드가 시작됨",
+      "nodeConnected": "노드가 연결됨",
+      "nodeStopping": "노드가 정지중...",
+      "nodeStopped": "노드가 정지됨",
+      "nodeError": "노드 연결 오류 :'(",
       "unableToBindPort":
-        "이더리움 노드를 실행 할 수 없습니다. 다른 인스턴스가 실행중인가요?",
+        "노드를 실행 할 수 없습니다. 다른 인스턴스가 실행중인가요?",
       "nodeSyncInfoStates":
         "블록 다운로드 중 __highestBlock__ 중 __displayBlock__, <br> 체인구조 다운로드 __displayKnownStates__ 중 __displayState__",
-      "nodeSyncFoundPeers": "__peers__ 피어에 연결중...",
+      "nodeSyncFoundPeers": "__peers__ 피어 연결중...",
       "launchApp": "어플리케이션 실행",
+      "retryConnection": "접속 재시도",
       "clientBinaries": {
         "scanning": "노드 업데이트 확인중...",
         "downloading": "새로운 노드 다운로드중...",
         "loadConfig": "클라이언트 설정 로딩중...",
         "filtering": "클라이언트 바이너리 필터링중...",
-        "done": "이더리움 노드 최신버전...",
+        "done": "노드 최신버전...",
         "error": "다운로드 된 바이너리 실행 중 오류."
       }
     },
@@ -183,11 +239,58 @@
           "passwordTooShort": "암호가 너무 짧습니다."
         }
       },
+      "sendTransactionConfirmation": {
+        "title": {
+          "sendTransaction": "트랜잭션 보내기",
+          "contractExecution": "컨트랙트 실행",
+          "createContract": "컨트랙트 만들기"
+        },
+        "contractExecutionInfo":
+          "컨트랙트의 함수를 실행시키려고 합니다. 가치 전송이 일어날 수도 있습니다.",
+        "contractCreationInfo":
+          "주어진 데이터를 가지고 컨트랙트를 만드려고 합니다.",
+        "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
+        "unlocking": "확인 중...",
+        "createContract": "컨트랙트 만들기",
+        "estimatedFee": "예상 수수료 사용량",
+        "estimatedGasError":
+          "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
+        "gasPrice": "개스 가격",
+        "perMillionGas": "백만 개스당 이더수",
+        "gasLimit": "최고 수수료 제공",
+        "data": "데이터",
+        "buttons": {
+          "sendTransaction": "트랜잭션 보내기"
+        },
+        "errors": {
+          "connectionTimeout":
+            "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
+          "wrongPassword": "암호가 일치하지 않습니다",
+          "multipleKeysMatchAddress":
+            "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
+          "insufficientFundsForGas":
+            "주 계정(etherbase)에 가스를 지불할 금액이 충분하지 않습니다.",
+          "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
+        },
+        "transactionThrow": "이 컨트랙트는 트랜젝션을 승인하지 않을 것 입니다.",
+        "noEstimate": "가스 소모량을 추정 할 수 없습니다.",
+        "parameters": "파라미터",
+        "showRawBytecode": "RAW 데이터 보기",
+        "showDecodedParameters": "디코딩된 파라미터 보기",
+        "lookupData": "데이터 디코딩하기",
+        "lookupDataExplainer": "해당 내용을 인터넷에서 확인하세요",
+        "overBlockGasLimit":
+          "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
+        "notEnoughGas":
+          "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요"
+      },
       "importAccount": {
         "doYouHaveAWalletFile": "지갑 파일을 가지고 있나요?",
         "walletFileDescription":
-          "<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이란 파일을 가지고 있을 겁니다. 세일이 끝나고 다운로드를 받았거나 이메일로 받았을 겁니다.</p>",
-        "dropFilesHere": "프리세일 파일을 가져다 놓기",
+          "<p>불러오기 위한 지갑 파일을 가져다 놓으세요.</p>",
+        "walletFilePresaleDescription":
+          "<p>불러오기 위한 지갑 파일을 가져다 놓으세요.<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이라는 파일을 가지고 있을 것입니다. 세일이 끝나고 다운로드를 받았거나 이메일로 받았을 것입니다.</p>",
+        "dropFilesHere": "파일을 가져다 놓기",
         "importing": "불러오는 중...",
         "buttons": {
           "showPassword": "암호보기"

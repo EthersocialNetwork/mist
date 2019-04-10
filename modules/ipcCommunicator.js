@@ -59,16 +59,8 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
   const senderWindow = Windows.getById(windowId);
 
   if (senderWindow) {
-    const { x, y } = senderWindow.window.getBounds();
-    senderWindow.window.setBounds(
-      {
-        width,
-        height: height | 0,
-        x,
-        y
-      },
-      true
-    );
+    senderWindow.window.setSize(width, height | 0);
+    senderWindow.window.center(); // ?
   }
 });
 
@@ -161,17 +153,19 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
           // geth
         } else {
           if (process.platform === 'darwin')
-            keystorePath += '/Library/Ethereum/keystore';
+            keystorePath += Settings.public.keystorePath.darwin;
 
           if (
             process.platform === 'freebsd' ||
             process.platform === 'linux' ||
             process.platform === 'sunos'
           )
-            keystorePath += '/.ethereum/keystore';
+            keystorePath += Settings.public.keystorePath.unix;
 
           if (process.platform === 'win32')
-            keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+            keystorePath = `${Settings.appDataPath}${
+              Settings.public.keystorePath.win32
+            }`;
         }
 
         if (!/^[0-9a-fA-F]{40}$/.test(keyfile.address)) {
@@ -197,13 +191,18 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
   });
 });
 
+// retryConnection
+ipc.on('retryConnection', () => {
+  ethereumNode.init();
+});
+
 // import presale wallet
 ipc.on('backendAction_importWalletFile', (e, path, pw) => {
   const spawn = require('child_process').spawn; // eslint-disable-line global-require
   const ClientBinaryManager = require('./clientBinaryManager'); // eslint-disable-line global-require
   let error = false;
 
-  const binPath = ClientBinaryManager.getClient('geth').binPath;
+  const binPath = ClientBinaryManager.getClient(Settings.public.defaultNodeType).binPath;
   const nodeProcess = spawn(binPath, ['wallet', 'import', path]);
 
   nodeProcess.once('error', () => {

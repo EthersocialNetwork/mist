@@ -291,7 +291,7 @@ let menuTempl = function(webviews) {
                 // geth
               } else {
                 if (process.platform === 'darwin') {
-                  userPath += '/Library/Ethereum/keystore';
+                  userPath += Settings.public.userPath.darwin;
                 }
 
                 if (
@@ -299,11 +299,11 @@ let menuTempl = function(webviews) {
                   process.platform === 'linux' ||
                   process.platform === 'sunos'
                 ) {
-                  userPath += '/.ethereum/keystore';
+                  userPath += Settings.public.userPath.unix;
                 }
 
                 if (process.platform === 'win32') {
-                  userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                  userPath = `${Settings.appDataPath}${Settings.public.userPath.win32}`;
                 }
               }
 
@@ -394,13 +394,6 @@ let menuTempl = function(webviews) {
   menu.push({
     label: i18n.t('mist.applicationMenu.view.label'),
     submenu: [
-      {
-        label: i18n.t('mist.applicationMenu.view.txHistory'),
-        accelerator: 'CommandOrControl+Shift+H',
-        click() {
-          Windows.createPopup('txHistory');
-        }
-      },
       {
         label: i18n.t('mist.applicationMenu.view.fullscreen'),
         accelerator: switchForSystem({
@@ -525,16 +518,18 @@ let menuTempl = function(webviews) {
     const nodeSubmenu = [];
 
     const ethClient = ClientBinaryManager.getClient('eth');
-    const gethClient = ClientBinaryManager.getClient('geth');
+    const gethClient = ClientBinaryManager.getClient(Settings.public.defaultNodeType);
+    log.info('itemMenu gethClient for ' + Settings.public.defaultNodeType);
+    log.info(gethClient);
 
     if (gethClient) {
       nodeSubmenu.push({
-        label: `Geth ${gethClient.version}`,
+        label: `${Settings.public.defaultNodeTypeId} ${gethClient.version}`,
         checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
         enabled: ethereumNode.isOwnNode,
         type: 'checkbox',
         click() {
-          restartNode('geth', null, 'fast', webviews);
+          restartNode(Settings.public.defaultNodeType, null, 'fast', webviews);
         }
       });
     }
@@ -558,10 +553,10 @@ let menuTempl = function(webviews) {
     });
   }
 
-  // add network switch
-  devToolsMenu.push({
-    label: i18n.t('mist.applicationMenu.develop.network'),
-    submenu: [
+  var networkSubmenu = [];
+  // ethereum networks
+  var submenus = {
+    ethereum: [
       {
         label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
         accelerator: 'CommandOrControl+Alt+1',
@@ -602,7 +597,51 @@ let menuTempl = function(webviews) {
       //     restartNode(ethereumNode.type, 'dev');
       //   }
       // }
+    ],
+    ethersocial: [
+      {
+        label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+        accelerator: 'CommandOrControl+Alt+1',
+        checked: store.getState().nodes.network === 'ethersocial',
+        enabled: store.getState().nodes.network !== 'private',
+        type: 'checkbox',
+        click() {
+          changeNodeNetwork('ethersocial', webviews);
+        }
+      },
+      {
+        label: 'Skynet - Test network',
+        accelerator: 'CommandOrControl+Alt+2',
+        checked: store.getState().nodes.network === 'skynet',
+        enabled: store.getState().nodes.network !== 'private',
+        type: 'checkbox',
+        click() {
+          changeNodeNetwork('skynet', webviews);
+        }
+      }
     ]
+  };
+
+  if (Settings.public.networkName == 'ethereum') {
+    // add ethereum network menu
+    networkSubmenu.push({
+      label: 'Ethereum',
+      submenu: submenus['ethereum']
+    });
+  }
+
+  if (Settings.public.networkName == 'ethersocial') {
+    // add ethersocial network menu
+    networkSubmenu.push({
+      label: 'EthersocialNetwork',
+      submenu: submenus['ethersocial']
+    });
+  }
+
+  // add network switch
+  devToolsMenu.push({
+    label: i18n.t('mist.applicationMenu.develop.network'),
+    submenu: networkSubmenu
   });
 
   // add sync mode switch
@@ -611,7 +650,7 @@ let menuTempl = function(webviews) {
     submenu: [
       {
         label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
-        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
+        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork && store.getState().nodes.network === 'main',
         checked: store.getState().nodes.local.syncMode === 'light',
         type: 'checkbox',
         click() {
@@ -674,7 +713,7 @@ let menuTempl = function(webviews) {
     );
   }
 
-  if (global.mode !== 'wallet') {
+  if (global.mode !== 'wallet' && Settings.public.networkName == 'ethereum') {
     devToolsMenu.push(
       {
         type: 'separator'
@@ -755,22 +794,71 @@ let menuTempl = function(webviews) {
     {
       label: i18n.t('mist.applicationMenu.help.mistWiki'),
       click() {
-        shell.openExternal('https://github.com/ethereum/mist/wiki');
-      }
-    },
-    {
-      label: i18n.t('mist.applicationMenu.help.gitter'),
-      click() {
-        shell.openExternal('https://gitter.im/ethereum/mist');
-      }
-    },
-    {
-      label: i18n.t('mist.applicationMenu.help.reportBug'),
-      click() {
-        shell.openExternal('https://github.com/ethereum/mist/issues');
+        shell.openExternal(Settings.public.wikiUrl);
       }
     }
   );
+
+  if (Settings.public && Settings.public.gitterUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.gitter'),
+        click() {
+          shell.openExternal(Settings.public.gitterUrl);
+        }
+      }
+    );
+  }
+
+  helpMenu.push(
+    {
+      label: i18n.t('mist.applicationMenu.help.reportBug'),
+      click() {
+        shell.openExternal(Settings.public.issueUrl);
+      }
+    }
+  );
+
+  if (Settings.public && (Settings.public.discordUrl || Settings.public.twitterUrl || Settings.public.redditUrl)) {
+    helpMenu.push(
+      {
+        type: 'separator'
+      }
+    );
+  }
+
+  if (Settings.public && Settings.public.discordUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.discord'),
+        click() {
+          shell.openExternal(Settings.public.discordUrl);
+        }
+      }
+    );
+  }
+
+  if (Settings.public && Settings.public.redditUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.reddit'),
+        click() {
+          shell.openExternal(Settings.public.redditUrl);
+        }
+      }
+    );
+  }
+
+  if (Settings.public && Settings.public.twitterUrl) {
+    helpMenu.push(
+      {
+        label: i18n.t('mist.applicationMenu.help.twitter'),
+        click() {
+          shell.openExternal(Settings.public.twitterUrl);
+        }
+      }
+    );
+  }
 
   menu.push({
     label: i18n.t('mist.applicationMenu.help.label'),

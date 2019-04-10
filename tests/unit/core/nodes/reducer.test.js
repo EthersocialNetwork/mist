@@ -10,6 +10,7 @@ describe('the nodes reducer', () => {
       blockNumber: 800,
       timestamp: 800
     },
+    type: 'mainnet',
     local: {
       client: 'geth',
       blockNumber: 0,
