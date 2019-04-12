@@ -1,38 +1,38 @@
 {
   "clients": {
     "Gesn": {
-      "version": "0.3.12",
+      "version": "0.3.13",
       "platforms": {
         "linux": {
           "ia32": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/gesn-linux-386-0.3.12-3fb5c0ab.tar.gz",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/gesn-linux-386-0.3.13-b6c12eb2.tar.gz",
               "type": "tar",
-              "md5": "f3470c5d6197e3185f06d660ac02f851",
-              "bin": "gesn-linux-386-0.3.12-3fb5c0ab/gesn"
+              "md5": "a5d4e349c20199c2f6786f0bd6a933b4",
+              "bin": "gesn-linux-386-0.3.13-b6c12eb2/gesn"
             },
             "bin": "gesn",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Gesn", "0.3.12"]
+                "output": ["Gesn", "0.3.13"]
               }
             }
           },
           "x64": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/gesn-linux-amd64-0.3.12-3fb5c0ab.tar.gz",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/gesn-linux-amd64-0.3.13-b6c12eb2.tar.gz",
               "type": "tar",
-              "md5": "d0e836c32c870aa605c27ad28d78d1e1",
-              "bin": "gesn-linux-amd64-0.3.12-3fb5c0ab/gesn"
+              "md5": "97bb4fefa24482454e68a43582bd71e6",
+              "bin": "gesn-linux-amd64-0.3.13-b6c12eb2/gesn"
             },
             "bin": "gesn",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Gesn", "0.3.12"]
+                "output": ["Gesn", "0.3.13"]
               }
             }
           }
@@ -41,32 +41,32 @@
           "ia32": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/gesn-windows-386-0.3.12-3fb5c0ab.zip",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/gesn-windows-386-0.3.13-b6c12eb2.zip",
               "type": "zip",
-              "md5": "5127e90b4896e3fed254812084451cdd",
-              "bin": "gesn-windows-386-0.3.12-3fb5c0ab\\gesn.exe"
+              "md5": "4baa92a81664c835bd569f10cc39cde0",
+              "bin": "gesn-windows-386-0.3.13-b6c12eb2\\gesn.exe"
             },
             "bin": "gesn.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Gesn", "0.3.12"]
+                "output": ["Gesn", "0.3.13"]
               }
             }
           },
           "x64": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/gesn-windows-amd64-0.3.12-3fb5c0ab.zip",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/gesn-windows-amd64-0.3.13-b6c12eb2.zip",
               "type": "zip",
-              "md5": "e38c2c97f750f448661f33770af0bcc5",
-              "bin": "gesn-windows-amd64-0.3.12-3fb5c0ab\\gesn.exe"
+              "md5": "47b0695c352fd1bbb4de08145130122f",
+              "bin": "gesn-windows-amd64-0.3.13-b6c12eb2\\gesn.exe"
             },
             "bin": "gesn.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Gesn", "0.3.12"]
+                "output": ["Gesn", "0.3.13"]
               }
             }
           }
@@ -75,16 +75,16 @@
           "x64": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/gesn-darwin-amd64-0.3.12-3fb5c0ab.tar.gz",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/gesn-darwin-amd64-0.3.13-b6c12eb2.tar.gz",
               "type": "tar",
-              "md5": "dbce65e89245fd5cd84db800c51d2cd8",
-              "bin": "gesn-darwin-amd64-0.3.12-3fb5c0ab/gesn"
+              "md5": "aa679d296df80d20855919608038d4f6",
+              "bin": "gesn-darwin-amd64-0.3.13-b6c12eb2/gesn"
             },
             "bin": "gesn",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Gesn", "0.3.12"]
+                "output": ["Gesn", "0.3.13"]
               }
             }
           }
@@ -92,38 +92,38 @@
       }
     },
     "Geth": {
-      "version": "0.3.12",
+      "version": "0.3.13",
       "platforms": {
         "linux": {
           "ia32": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/geth-linux-386-0.3.12-3fb5c0ab.tar.gz",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/geth-linux-386-0.3.13-b6c12eb2.tar.gz",
               "type": "tar",
-              "md5": "2a103c8dc86bcf2121f076caf0b136f5",
-              "bin": "geth-linux-386-0.3.12-3fb5c0ab/geth"
+              "md5": "43c92b01e70609e874d9fe6df50405b9",
+              "bin": "geth-linux-386-0.3.13-b6c12eb2/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "0.3.12"]
+                "output": ["Geth", "0.3.13"]
               }
             }
           },
           "x64": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/geth-linux-amd64-0.3.12-3fb5c0ab.tar.gz",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/geth-linux-amd64-0.3.13-b6c12eb2.tar.gz",
               "type": "tar",
-              "md5": "14e32aa50c92792cfc4b7ba8decef924",
-              "bin": "geth-linux-amd64-0.3.12-3fb5c0ab/geth"
+              "md5": "6e8e1acdb70ae426d424f2ea720dfc46",
+              "bin": "geth-linux-amd64-0.3.13-b6c12eb2/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "0.3.12"]
+                "output": ["Geth", "0.3.13"]
               }
             }
           }
@@ -132,32 +132,32 @@
           "ia32": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/geth-windows-386-0.3.12-3fb5c0ab.zip",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/geth-windows-386-0.3.13-b6c12eb2.zip",
               "type": "zip",
-              "md5": "dfead6ec56eaf592572e3be9b8496ae3",
-              "bin": "geth-windows-386-0.3.12-3fb5c0ab\\geth.exe"
+              "md5": "82b3c35dbfbd66e2a914bbaac8f07394",
+              "bin": "geth-windows-386-0.3.13-b6c12eb2\\geth.exe"
             },
             "bin": "geth.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "0.3.12"]
+                "output": ["Geth", "0.3.13"]
               }
             }
           },
           "x64": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/geth-windows-amd64-0.3.12-3fb5c0ab.zip",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/geth-windows-amd64-0.3.13-b6c12eb2.zip",
               "type": "zip",
-              "md5": "b0e0f30b33e0f00cdd91e4c6dbe01ef1",
-              "bin": "geth-windows-amd64-0.3.12-3fb5c0ab\\geth.exe"
+              "md5": "2ac7c9facb03d3907d2984e2e040edf1",
+              "bin": "geth-windows-amd64-0.3.13-b6c12eb2\\geth.exe"
             },
             "bin": "geth.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "0.3.12"]
+                "output": ["Geth", "0.3.13"]
               }
             }
           }
@@ -166,16 +166,16 @@
           "x64": {
             "download": {
               "url":
-                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.12/geth-darwin-amd64-0.3.12-3fb5c0ab.tar.gz",
+                "https://github.com/ethersocial/go-ethersocial/releases/download/v0.3.13/geth-darwin-amd64-0.3.13-b6c12eb2.tar.gz",
               "type": "tar",
-              "md5": "b164b63677508355f943db67c0b522ae",
-              "bin": "geth-darwin-amd64-0.3.12-3fb5c0ab/geth"
+              "md5": "6263d28f9dec7481cd82ecd06bd0b144",
+              "bin": "geth-darwin-amd64-0.3.13-b6c12eb2/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "0.3.12"]
+                "output": ["Geth", "0.3.13"]
               }
             }
           }
